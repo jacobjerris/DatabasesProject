@@ -1,4 +1,4 @@
-import java.util.Scanner;
+import Java.util.Scanner;
 
 public class App {
     public static void main(String[] args){
@@ -12,7 +12,7 @@ public class App {
             if(userInput == 1){
                 System.out.println("Enter your Book Title: ");
             } else if (userInput == 2) {
-                System.out.println("Checkout goes here!");
+                System.out.println("Test!");
             } else if (userInput == 3) {
                 System.out.println("Return goes here!");
             } else if (userInput == 4) {
