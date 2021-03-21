@@ -1,4 +1,5 @@
 import java.util.Scanner;
+import java.sql.*;
 /*
     TODO:
     1. generate queries for each option
@@ -7,23 +8,27 @@ import java.util.Scanner;
  */
 
 public class App {
-    public static void main(String[] args){
+    public static void main(String[] args) throws SQLException {
+
+        //creating database connection
+        connectToDatabase("n01419995", "Spring20219995");
+
         Scanner input = new Scanner(System.in);
-        System.out.print("Are you a User or an Admin?\n");
-        String user = input.nextLine();
-        if(user.equalsIgnoreCase("User")) {
-        	
-            UserLoop(input);
-        
-        } else if (user.equalsIgnoreCase("Admin")) {
-        	
-            AdminLoop(input);
-            
+            System.out.print("Are you a User or an Admin?\n");
+            String user = input.nextLine();
+            if(user.equalsIgnoreCase("User")) {
+
+                UserLoop(input);
+
+            } else if (user.equalsIgnoreCase("Admin")) {
+
+                AdminLoop(input);
+
+            }
+
+            //closing userInput bc it yells at me for mem issues
+            input.close();
         }
-        
-        //closing userInput bc it yells at me for mem issues
-        input.close();
-    }
     
     public static void UserLoop(Scanner input) {
     	System.out.println("What would you like to do?");
@@ -51,11 +56,14 @@ public class App {
             
             switch(userInput) {
                 case 1:
-                    //Check balance based on customer number?
+                    System.out.println("Enter your customer number to view your balance here: ");
                 case 2:
-                    //Pay outstanding balance, and or late fees using "credit card" info?
+                    System.out.println("Enter your customer number to view the balance to be paid here: ");
+                    //balance query
+                    System.out.println("Enter your credit card credentials here: ");
+                    //once entered, the info should be cleared in their profile and display 0.00 when they submit
             }
-            
+
         } else {
             System.out.println("Command not recognised");
         }
@@ -88,6 +96,16 @@ public class App {
             System.out.println("Command not recognised");
         }
     	
+    }
+
+    public static void connectToDatabase(String username, String password) throws SQLException {
+        Connection con = DriverManager.getConnection("jdbc:mysql://cisvm-winsrv-mysql1.unfcsd.unf.edu:3308", username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM author");
+
+        while(rs.next()) {
+            String s = rs.getString("test");
+        }
     }
     
 }
