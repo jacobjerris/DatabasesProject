@@ -1,0 +1,35 @@
+AUTHOR INSERTS:
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('1', 'Test', 'Man', 'T');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('2', 'Matt', 'Man', 'R');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('3', 'Teach', 'SQL', 'Y');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('4', 'Jake', 'John', 'Q');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('5', 'John', 'Allen', 'P');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('6', 'Michael', 'Loop', 'I');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('7', 'Jimmy', 'Nguyen', 'R');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('8', 'Richard', 'Hill', 'P');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('9', 'Christopher', 'Hoskin', 'C');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('10', 'James', 'Hey', 'A');
+
+CATEGORY INSERTS: 
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Fiction', 'Realistic Fiction');
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Drama', 'Tragedy');
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Folklore', 'Fairy Tale');
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Nonfiction', 'Persuasive Writing');
+
+PUBLISHER INSERTS:
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('1', 'Im a Publisher');
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('2', 'This is a publisher?');
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('3', 'Who is this publisher');
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('4', 'This publisher I am');
+
+BOOKS INSERTS:
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('1', '1', 'Whats a book title?', 'Fiction', '1', 'New', 'Digital', '10.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('3', '2', 'SQL For Dummies', 'Nonfiction', '2', 'New', 'Digital', '11.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('4', '3', 'This isn\'t a book', 'Drama', '2', 'New', 'Digital', '12.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('5', '4', 'Why do we even sell books', 'Drama', '2', 'New', 'Digital', '20.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('6', '5', 'Books?', 'Folklore', '3', 'New', 'Digital', '24.55');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('8', '6', 'This is a book', 'Folklore', '3', 'Used', 'Hard Copy', '79.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('9', '7', 'Why do we have this?', 'Fiction', '1', 'Used', 'Hard Copy', '24.99');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('10', '8', 'Books for Dummies', 'Fiction', '4', 'Used', 'Digital', '120.44');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('11', '9', 'Making a query', 'Fiction', '4', 'Used', 'Digital', '230.22');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('12', '10', 'Books!', 'Nonfiction', '4', 'New', 'Hard Copy', '21.00');
