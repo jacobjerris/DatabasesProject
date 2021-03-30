@@ -8,10 +8,20 @@ import java.sql.*;
  */
 
 public class App {
-    public static void main(String[] args) throws SQLException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         //creating database connection
-        connectToDatabase("n01419995", "Spring20219995");
+        //connectToDatabase("n01419995", "Spring20219995");
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", "root", "root");
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM local.author");
+
+        while(rs.next()) {
+            String s = rs.getString("FName");
+            System.out.print(s + "\n");
+        }
+
 
         Scanner input = new Scanner(System.in);
             System.out.print("Are you a User or an Admin?\n");
@@ -97,16 +107,5 @@ public class App {
         }
     	
     }
-
-    public static void connectToDatabase(String username, String password) throws SQLException {
-        Connection con = DriverManager.getConnection("jdbc:mysql://cisvm-winsrv-mysql1.unfcsd.unf.edu:3308", username, password);
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM author");
-
-        while(rs.next()) {
-            String s = rs.getString("test");
-        }
-    }
-    
 }
 
