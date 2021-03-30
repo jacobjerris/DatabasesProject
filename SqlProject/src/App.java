@@ -11,16 +11,7 @@ public class App {
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         //creating database connection
-        //connectToDatabase("n01419995", "Spring20219995");
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", "root", "root");
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM local.author");
-
-        while(rs.next()) {
-            String s = rs.getString("FName");
-            System.out.print(s + "\n");
-        }
+        testQuery("root", "root");
 
 
         Scanner input = new Scanner(System.in);
@@ -105,7 +96,20 @@ public class App {
         } else {
             System.out.println("Command not recognised");
         }
-    	
     }
+
+    public static void testQuery(String username, String password) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Statement stmt = con.createStatement();
+        ResultSet rs = stmt.executeQuery("SELECT * FROM local.author");
+
+        while(rs.next()) {
+            String s = rs.getString("FName");
+            String p = rs.getString("LName");
+            System.out.print(s + " " + p + "\n");
+        }
+    }
+
 }
 
