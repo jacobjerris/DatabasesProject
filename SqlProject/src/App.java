@@ -34,10 +34,10 @@ public class App {
             System.out.print("\t1. Search\n\t2. Checkout\n\t3. Return\n\t4. Check Balance, Pay Balance and late fees\n\t5. Log Out\nEnter Choice: ");
             userInput = input.nextInt(); //collect user choice
             if (userInput == 1) {
-                System.out.println("Enter your Book Title: ");
-                String authorName = input.next();
-
-                authorLookup("root", "root", authorName);
+                System.out.print("Enter your Book Title: ");
+                input.nextLine();
+                String bookTitle = input.nextLine();
+                authorLookup("root", "root", bookTitle);
                 //query based on user input for a title, could use same query as in the "locate title" in admin panel
 
             } else if (userInput == 2) {
@@ -57,11 +57,11 @@ public class App {
 
                 switch (userInput) {
                     case 1:
-                        System.out.println("Enter your customer number to view your balance here: ");
+                        System.out.print("Enter your customer number to view your balance here: ");
                     case 2:
-                        System.out.println("Enter your customer number to view the balance to be paid here: ");
+                        System.out.print("Enter your customer number to view the balance to be paid here: ");
                         //balance query
-                        System.out.println("Enter your credit card credentials here: ");
+                        System.out.print("Enter your credit card credentials here: ");
                         //once entered, the info should be cleared in their profile and display 0.00 when they submit
                 }
             }else if (userInput == 5){
@@ -74,14 +74,17 @@ public class App {
     }
 
     
-    public static void AdminLoop(Scanner input) {
+    public static void AdminLoop(Scanner input) throws SQLException, ClassNotFoundException {
         int userInput = 0;
         while (userInput != 5) {
             System.out.println("\nWhat would you like to do?");
             System.out.print("\t1. Locate Title\n\t2. Update inventory\n\t3. Check Balance\n\t4. Generate Reports\n\t5. Log Out\nEnter Choice: ");
             userInput = input.nextInt();
             if (userInput == 1) {
-                System.out.println("Please enter the name of the book you're trying to locate: ");
+                System.out.print("Please enter the name of the book you're trying to locate: ");
+                input.nextLine();
+                String bookTitle = input.nextLine();
+                authorLookup("root", "root", bookTitle);
                 //query based on book name, show all details about book
 
             } else if (userInput == 2) {
@@ -106,32 +109,23 @@ public class App {
         }
     }
 
-    public static void testQuery(String username, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
-        Statement stmt = con.createStatement();
-        ResultSet rs = stmt.executeQuery("SELECT * FROM local.author ");
 
-        while(rs.next()) {
-            String s = rs.getString("FName");
-            String p = rs.getString("LName");
-            System.out.print(s + " " + p + "\n");
-        }
-    }
-
-    public static void authorLookup(String username, String password, String FName) throws ClassNotFoundException, SQLException {
+    public static void authorLookup(String username, String password, String bookTitle) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.author WHERE FName =?");
-        ps.setString(1, FName);
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle =?");
+        ps.setString(1, bookTitle);
 
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
-            String s = rs.getString("FName");
-            String r = rs.getString("LName");
-            String q = rs.getString("MInitial");
-            System.out.print(s + " " + r + " " + q + " " + "\n");
+            String b = rs.getString("BookTitle");
+            String g = rs.getString("Genre");
+            String c = rs.getString("Condition");
+            String f = rs.getString("Format");
+            String p = rs.getString("Price");
+            String count = rs.getString("Count");
+            System.out.print("Book Title: " + b + "\n" + "Genre: " + g + "\n" + "Condition: " + c + "\n" + "Format: " + f + "\n" + "Price: " + p + "\n" + "Count: " + count + "\n");
         }
     }
 }
