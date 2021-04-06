@@ -26,7 +26,8 @@ public class App {
             }
             input.close(); //closing userInput bc it yells at me for mem issues
         }
-    
+
+
     public static void UserLoop(Scanner input) throws SQLException, ClassNotFoundException {
         int userInput = 0;
         while (userInput != 5) { //loops through prompts until user enters 5.
@@ -58,11 +59,15 @@ public class App {
                 switch (userInput) {
                     case 1:
                         System.out.print("Enter your customer number to view your balance here: ");
+                        break;
                     case 2:
                         System.out.print("Enter your customer number to view the balance to be paid here: ");
                         //balance query
                         System.out.print("Enter your credit card credentials here: ");
                         //once entered, the info should be cleared in their profile and display 0.00 when they submit
+                        break;
+                    default:
+                        System.out.println("Command not recognised");
                 }
             }else if (userInput == 5){
              System.out.println("Goodbye!");
@@ -88,8 +93,26 @@ public class App {
                 //query based on book name, show all details about book
 
             } else if (userInput == 2) {
-                System.out.println("What would you like to do?\n1. Add to inventory\n2. Delete title\n3. Update title");
-                //run query based on user input, prob a switch statement is needed, etc.
+                System.out.println("What would you like to do?");
+                System.out.print("\t1. Add to inventory\n\t2. Delete title\n\t3. Update title\nEnter Choice: ");
+                //run query based on user input
+                userInput = input.nextInt();
+                switch (userInput) {
+                    case 1:
+                        System.out.print("*Add to inventory*\n");
+                        addInventory("root","root");
+                        break;
+                    case 2:
+                        System.out.print("*Delete title*\n");
+                        deleteInventory("root","root");
+                        break;
+                    case 3:
+                        System.out.print("*Update title*\n");
+                        updateInventory("root","root");
+                        break;
+                    default:
+                        System.out.println("Command not recognised");
+                }
 
             } else if (userInput == 3) {
                 System.out.println("What would you like to do?\n1. Check user balance\n2. Apply late fee to user");
@@ -124,8 +147,167 @@ public class App {
             String c = rs.getString("Condition");
             String f = rs.getString("Format");
             String p = rs.getString("Price");
-            String count = rs.getString("Count");
-            System.out.print("Book Title: " + b + "\n" + "Genre: " + g + "\n" + "Condition: " + c + "\n" + "Format: " + f + "\n" + "Price: " + p + "\n" + "Count: " + count + "\n");
+            System.out.print("Book Title: " + b + "\n" + "Genre: " + g + "\n" + "Condition: " + c + "\n" + "Format: " + f + "\n" + "Price: " + p + "\n");
         }
+    }
+
+
+    public static void addInventory(String username, String password) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        //Prompt User for Book Information
+        Scanner input = new Scanner(System.in);
+        System.out.println("Enter Title Information to add Title to Database");
+        System.out.print("Book Title: ");
+        String bookTitle = input.nextLine();
+        System.out.print("Book ISBN: ");
+        String bookISBN = input.nextLine();
+        System.out.print("Book AuthorID: ");
+        String bookAuthorID = input.nextLine();
+        System.out.print("Book Author First Name: ");
+        String bookFName = input.nextLine();
+        System.out.print("Book Author Last Name: ");
+        String bookLName = input.nextLine();
+        System.out.print("Book Author Middle Initial: ");
+        String bookMInitial = input.nextLine();
+        System.out.print("Book Genre: ");
+        String bookGenre = input.nextLine();
+        System.out.print("Book SubGenre: ");
+        String bookSubGenre = input.nextLine();
+        System.out.print("Book PublisherID: ");
+        String bookPublisherID = input.nextLine();
+        System.out.print("Book PublisherName: ");
+        String bookPublisherName = input.nextLine();
+        System.out.print("Book Condition: ");
+        String bookCondition = input.nextLine();
+        System.out.print("Book format: ");
+        String bookFormat = input.nextLine();
+        System.out.print("Book Price: ");
+        String bookPrice = input.nextLine();
+
+        //Author Insert Statement
+        String sqlAuthor = "INSERT INTO local.author (AuthorID, FName, LName, MInitial ) VALUES (?, ?, ?, ?)";
+
+        PreparedStatement authorStatement = con.prepareStatement(sqlAuthor);
+        authorStatement.setInt(1, Integer.parseInt(bookAuthorID));
+        authorStatement.setString(2, bookFName);
+        authorStatement.setString(3, bookLName);
+        authorStatement.setString(4, bookMInitial);
+
+        System.out.printf("\n%s\n", authorStatement);
+        authorStatement.executeUpdate();
+
+        //Genre Insert Statement
+        String sqlGenre = "INSERT INTO local.category (Genre, SubGenre ) VALUES (?, ?)";
+
+        PreparedStatement genreStatement = con.prepareStatement(sqlGenre);
+        genreStatement.setString(1, bookGenre);
+        genreStatement.setString(2, bookSubGenre);
+
+        System.out.printf("%s\n", genreStatement);
+        genreStatement.executeUpdate();
+
+        //Publisher Insert Statement
+        String sqlPublisher = "INSERT INTO local.publishers (PublisherID, Name ) VALUES (?, ?)";
+
+        PreparedStatement publisherStatement = con.prepareStatement(sqlPublisher);
+        publisherStatement.setString(1, bookPublisherID);
+        publisherStatement.setString(2, bookPublisherName);
+
+        System.out.printf("%s\n", publisherStatement);
+        publisherStatement.executeUpdate();
+
+        //Book Insert Statement
+        String sqlBook = "INSERT INTO local.books (ISBN, AuthorID, BookTitle, Genre, PublisherID, `Condition`, `Format`, Price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        PreparedStatement bookStatement = con.prepareStatement(sqlBook);
+        bookStatement.setInt(1, Integer.parseInt(bookISBN));
+        bookStatement.setInt(2, Integer.parseInt(bookAuthorID));
+        bookStatement.setString(3, bookTitle);
+        bookStatement.setString(4, bookGenre);
+        bookStatement.setInt(5, Integer.parseInt(bookPublisherID));
+        bookStatement.setString(6, bookCondition);
+        bookStatement.setString(7, bookFormat);
+        bookStatement.setFloat(8, Float.parseFloat(bookPrice));
+
+        System.out.printf("%s\n\n", bookStatement);
+        int rowsInserted = bookStatement.executeUpdate();
+        if (rowsInserted > 0) {
+            System.out.println("A new book was inserted successfully!");
+        }
+    }
+
+
+    public static void deleteInventory(String username, String password) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter Book Title to Delete: ");
+        String bookTitle = input.nextLine();
+
+        if(bookTitle != null){
+            System.out.printf("Would you like to delete the book \"%s\" from inventory?\nYes/No:", bookTitle);
+            char user = input.nextLine().charAt(0);
+            if(user == 'y' || user == 'Y') {
+                PreparedStatement ds = con.prepareStatement("DELETE FROM local.books WHERE BookTitle =?");
+                ds.setString(1, bookTitle);
+                ds.executeUpdate();
+                System.out.printf("Book \"%s\" has been Deleted from inventory.", bookTitle);
+            }
+            else if(user == 'n' || user == 'N')
+                System.out.printf("Book \"%s\" has NOT been Deleted from inventory.", bookTitle);
+
+            else
+                System.out.println("Command not found");
+
+        }
+        else
+            System.out.print("No book with matching title found.");
+    }
+
+
+    public static void updateInventory(String username, String password) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter Book ISBN to Update: ");
+        String bookISBN = input.nextLine();
+
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE ISBN =?");
+        ps.setString(1, bookISBN);
+
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()) {
+            String b = rs.getString("BookTitle");
+            String g = rs.getString("Genre");
+            String c = rs.getString("Condition");
+            String f = rs.getString("Format");
+            String p = rs.getString("Price");
+            System.out.print("Book Title: " + b + "\n" + "Genre: " + g + "\n" + "Condition: " + c + "\n" + "Format: " + f + "\n" + "Price: " + p + "\n\n");
+            System.out.printf("Is %s the book you want to Update?\nYes/No: ", b);
+        }
+
+        char user = input.nextLine().charAt(0);
+        if(user == 'y' || user == 'Y') {
+            System.out.print("New Book Title: ");
+            String bookTitle = input.nextLine();
+            
+            PreparedStatement prs = con.prepareStatement("UPDATE local.books SET BookTitle = ? WHERE ISBN = ?");
+
+            prs.setString(1,bookTitle);
+            prs.setString(2,bookISBN);
+
+            prs.executeUpdate();
+            prs.close();
+            System.out.println("Book Title has been Updated.");
+        }
+        else if(user == 'n' || user == 'N')
+            System.out.println("Book has NOT been Updated.");
+
+        else
+            System.out.println("Option not found");
     }
 }
