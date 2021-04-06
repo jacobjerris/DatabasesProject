@@ -5,7 +5,7 @@
       <ServerVersion>8.0.23</ServerVersion>
       <DefaultEngine>InnoDB</DefaultEngine>
       <DefaultTmpEngine>InnoDB</DefaultTmpEngine>
-      <DefaultCasing>lower/lower</DefaultCasing>
+      <DefaultCasing>mixed/mixed</DefaultCasing>
     </root>
     <schema id="2" parent="1" name="information_schema">
       <Current>1</Current>
@@ -4586,191 +4586,185 @@ SELECT|sys.sys_config
       <DataType>float|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
     </column>
-    <column id="1121" parent="364" name="Count">
-      <Position>9</Position>
-      <DataType>int|0s</DataType>
-      <NotNull>1</NotNull>
-      <DefaultExpression>0</DefaultExpression>
-    </column>
-    <index id="1122" parent="364" name="AuthorID_UNIQUE">
+    <index id="1121" parent="364" name="AuthorID_UNIQUE">
       <ColNames>AuthorID</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="1123" parent="364" name="BookTitle_UNIQUE">
+    <index id="1122" parent="364" name="BookTitle_UNIQUE">
       <ColNames>BookTitle</ColNames>
       <Unique>1</Unique>
       <Type>btree</Type>
     </index>
-    <index id="1124" parent="364" name="Genre_idx">
+    <index id="1123" parent="364" name="Genre_idx">
       <ColNames>Genre</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="1125" parent="364" name="PublisherID_idx">
+    <index id="1124" parent="364" name="PublisherID_idx">
       <ColNames>PublisherID</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="1126" parent="364" name="PRIMARY">
+    <key id="1125" parent="364" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>ISBN</ColNames>
       <Primary>1</Primary>
     </key>
-    <key id="1127" parent="364" name="AuthorID_UNIQUE">
+    <key id="1126" parent="364" name="AuthorID_UNIQUE">
       <ColNames>AuthorID</ColNames>
       <UnderlyingIndexName>AuthorID_UNIQUE</UnderlyingIndexName>
     </key>
-    <key id="1128" parent="364" name="BookTitle_UNIQUE">
+    <key id="1127" parent="364" name="BookTitle_UNIQUE">
       <ColNames>BookTitle</ColNames>
       <UnderlyingIndexName>BookTitle_UNIQUE</UnderlyingIndexName>
     </key>
-    <foreign-key id="1129" parent="364" name="AuthorID">
+    <foreign-key id="1128" parent="364" name="AuthorID">
       <ColNames>AuthorID</ColNames>
       <RefTableName>author</RefTableName>
       <RefColNames>AuthorID</RefColNames>
     </foreign-key>
-    <foreign-key id="1130" parent="364" name="Genre">
+    <foreign-key id="1129" parent="364" name="Genre">
       <ColNames>Genre</ColNames>
       <RefTableName>category</RefTableName>
       <RefColNames>Genre</RefColNames>
     </foreign-key>
-    <foreign-key id="1131" parent="364" name="PublisherID">
+    <foreign-key id="1130" parent="364" name="PublisherID">
       <ColNames>PublisherID</ColNames>
       <RefTableName>publishers</RefTableName>
       <RefColNames>PublisherID</RefColNames>
     </foreign-key>
-    <column id="1132" parent="365" name="Genre">
+    <column id="1131" parent="365" name="Genre">
       <Position>1</Position>
       <DataType>varchar(45)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1133" parent="365" name="SubGenre">
+    <column id="1132" parent="365" name="SubGenre">
       <Position>2</Position>
       <DataType>varchar(45)|0s</DataType>
     </column>
-    <key id="1134" parent="365" name="PRIMARY">
+    <key id="1133" parent="365" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>Genre</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="1135" parent="366" name="CustomerID">
+    <column id="1134" parent="366" name="CustomerID">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1136" parent="366" name="Balance">
+    <column id="1135" parent="366" name="Balance">
       <Position>2</Position>
       <DataType>float|0s</DataType>
       <NotNull>1</NotNull>
       <DefaultExpression>0</DefaultExpression>
     </column>
-    <key id="1137" parent="366" name="PRIMARY">
+    <key id="1136" parent="366" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>CustomerID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="1138" parent="367" name="PublisherID">
+    <column id="1137" parent="367" name="PublisherID">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1139" parent="367" name="Name">
+    <column id="1138" parent="367" name="Name">
       <Position>2</Position>
       <DataType>varchar(45)|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="1140" parent="367" name="PRIMARY">
+    <key id="1139" parent="367" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>PublisherID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="1141" parent="368" name="RentalID">
+    <column id="1140" parent="368" name="RentalID">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1142" parent="368" name="Day_Rented">
+    <column id="1141" parent="368" name="Day_Rented">
       <Position>2</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1143" parent="368" name="Returned">
+    <column id="1142" parent="368" name="Returned">
       <Position>3</Position>
       <DataType>tinyint|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1144" parent="368" name="Date_Due">
+    <column id="1143" parent="368" name="Date_Due">
       <Position>4</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <key id="1145" parent="368" name="PRIMARY">
+    <key id="1144" parent="368" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>RentalID</ColNames>
       <Primary>1</Primary>
     </key>
-    <column id="1146" parent="369" name="TransactionID">
+    <column id="1145" parent="369" name="TransactionID">
       <Position>1</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1147" parent="369" name="CustomerID">
+    <column id="1146" parent="369" name="CustomerID">
       <Position>2</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1148" parent="369" name="Transaction_Date">
+    <column id="1147" parent="369" name="Transaction_Date">
       <Position>3</Position>
       <DataType>datetime|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1149" parent="369" name="ISBN">
+    <column id="1148" parent="369" name="ISBN">
       <Position>4</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1150" parent="369" name="Transaction_Price">
+    <column id="1149" parent="369" name="Transaction_Price">
       <Position>5</Position>
       <DataType>float|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
     </column>
-    <column id="1151" parent="369" name="Rental">
+    <column id="1150" parent="369" name="Rental">
       <Position>6</Position>
       <DataType>tinyint|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <column id="1152" parent="369" name="RentalID">
+    <column id="1151" parent="369" name="RentalID">
       <Position>7</Position>
       <DataType>int|0s</DataType>
       <NotNull>1</NotNull>
     </column>
-    <index id="1153" parent="369" name="CustomerID_idx">
+    <index id="1152" parent="369" name="CustomerID_idx">
       <ColNames>CustomerID</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="1154" parent="369" name="ISBN_idx">
+    <index id="1153" parent="369" name="ISBN_idx">
       <ColNames>ISBN</ColNames>
       <Type>btree</Type>
     </index>
-    <index id="1155" parent="369" name="RentalID_idx">
+    <index id="1154" parent="369" name="RentalID_idx">
       <ColNames>RentalID</ColNames>
       <Type>btree</Type>
     </index>
-    <key id="1156" parent="369" name="PRIMARY">
+    <key id="1155" parent="369" name="PRIMARY">
       <NameSurrogate>1</NameSurrogate>
       <ColNames>TransactionID</ColNames>
       <Primary>1</Primary>
     </key>
-    <foreign-key id="1157" parent="369" name="CustomerID">
+    <foreign-key id="1156" parent="369" name="CustomerID">
       <ColNames>CustomerID</ColNames>
       <RefTableName>customer</RefTableName>
       <RefColNames>CustomerID</RefColNames>
     </foreign-key>
-    <foreign-key id="1158" parent="369" name="ISBN">
+    <foreign-key id="1157" parent="369" name="ISBN">
       <ColNames>ISBN</ColNames>
       <RefTableName>books</RefTableName>
       <RefColNames>ISBN</RefColNames>
     </foreign-key>
-    <foreign-key id="1159" parent="369" name="RentalID">
+    <foreign-key id="1158" parent="369" name="RentalID">
       <ColNames>RentalID</ColNames>
       <RefTableName>rent_status</RefTableName>
       <RefColNames>RentalID</RefColNames>

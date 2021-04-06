@@ -42,7 +42,20 @@ public class App {
                 //query based on user input for a title, could use same query as in the "locate title" in admin panel
 
             } else if (userInput == 2) {
-                System.out.println("Checkout: ");
+                System.out.println("What would you like to do?\n1. Purchase book\n2. Rent book");
+
+                int userSelection = input.nextInt();
+
+                if(userSelection == 1) {
+                    System.out.println("Please enter the book title you'd like to purchase: ");
+                    String bookUser = input.nextLine();
+                    purchaseBook();
+                }
+                else if(userSelection ==2) {
+                    System.out.println("Please provide your customer number: ");
+                    int cusNumber = input.nextInt();
+                    rentBook("root", "rootuser", cusNumber);
+                }
                 //checkout could link to two options, rent or buy
 
 
@@ -71,7 +84,6 @@ public class App {
                 }
             }else if (userInput == 5){
              System.out.println("Goodbye!");
-
             } else {
                 System.out.println("Command not recognised");
             }
@@ -149,6 +161,35 @@ public class App {
             String p = rs.getString("Price");
             System.out.print("Book Title: " + b + "\n" + "Genre: " + g + "\n" + "Condition: " + c + "\n" + "Format: " + f + "\n" + "Price: " + p + "\n");
         }
+    }
+
+    public static void rentBook(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
+        checkBalance.setInt(1, cusNumber);
+
+        ResultSet rs = checkBalance.executeQuery();
+        while(rs.next()) {
+            int b = rs.getInt("Balance");
+            if (b == 0) {
+                System.out.println("You may rent books!");
+            }
+            else {
+                System.out.println("Please clear your balance before renting books.");
+            }
+        }
+    }
+
+    public static void purchaseBook(String username, String password, String book) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        PreparedStatement checkBalance = con.prepareStatement("");
+
+        checkBalance.setString(1, book);
+
     }
 
 
