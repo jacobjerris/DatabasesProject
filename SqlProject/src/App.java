@@ -1,3 +1,4 @@
+
 import java.util.Scanner;
 import java.sql.*;
 /*
@@ -54,7 +55,13 @@ public class App {
                 else if(userSelection ==2) {
                     System.out.println("Please provide your customer number: ");
                     int cusNumber = input.nextInt();
-                    rentBook("root", "rootuser", cusNumber);
+
+                    if(/*rentBookCheck("root", "rootuser", cusNumber) && */rentBookCheck2("root", "rootuser")) {
+                        System.out.println("ya");
+                    }
+                    else {
+                        System.out.println("boo");
+                    }
                 }
                 //checkout could link to two options, rent or buy
 
@@ -163,30 +170,35 @@ public class App {
         }
     }
 
-    public static void rentBook(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
+    public static boolean rentBookCheck(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
+        boolean test = false;
+
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
         PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
         checkBalance.setInt(1, cusNumber);
 
-        boolean balance = false;
-
-
-        PreparedStatement countOfRental = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
-
-        ResultSet count = countOfRental.executeQuery();
         ResultSet rs = checkBalance.executeQuery();
 
-
-        while (rs.next()) {
+        while(rs.next()) {
             int b = rs.getInt("Balance");
-
             if (b == 0) {
-                balance = true;
-            } else {
-                System.out.println("Please clear your balance before renting books.");
+                test = true;
             }
         }
+        return test;
+    }
+
+    public static boolean rentBookCheck2(String username, String password) throws ClassNotFoundException, SQLException {
+        boolean test = false;
+
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        PreparedStatement checkNumber = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
+
+        ResultSet rs = checkNumber.executeQuery();
+
+        return test;
     }
 
     public static void purchaseBook(String username, String password, String book) throws ClassNotFoundException, SQLException {
