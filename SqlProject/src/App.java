@@ -9,10 +9,12 @@ import java.sql.*;
  */
 
 public class App {
+    static String username = "root";
+    static String password = "root";
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
 
         //creating database connection
-        //testQuery("root", "root");
+        //testQuery(username, password);
         Scanner input = new Scanner(System.in);
             System.out.print("Are you a User or an Admin?\n");
             String user = input.nextLine();
@@ -39,7 +41,7 @@ public class App {
                 System.out.print("Enter your Book Title: ");
                 input.nextLine();
                 String bookTitle = input.nextLine();
-                authorLookup("root", "root", bookTitle);
+                authorLookup(username, password, bookTitle);
                 //query based on user input for a title, could use same query as in the "locate title" in admin panel
 
             } else if (userInput == 2) {
@@ -50,22 +52,20 @@ public class App {
                 if(userSelection == 1) {
                     System.out.println("Please enter the book title you'd like to purchase: ");
                     String bookUser = input.nextLine();
-                    purchaseBook("root", "rootuser", bookUser);
+                    purchaseBook(username, password, bookUser);
                 }
                 else if(userSelection ==2) {
                     System.out.println("Please provide your customer number: ");
                     int cusNumber = input.nextInt();
 
-                    if(/*rentBookCheck("root", "rootuser", cusNumber) && */rentBookCheck2("root", "rootuser")) {
-                        System.out.println("ya");
+                    if(rentBookCheck(username, password, cusNumber) || rentBookCheck2(username, password)) {
+                        System.out.println("Please clear or return your already rented books before renting another one, thank you!");
                     }
                     else {
-                        System.out.println("boo");
+                       System.out.println("Please enter the book title you'd like to rent: ");
                     }
                 }
                 //checkout could link to two options, rent or buy
-
-
             } else if (userInput == 3) {
                 System.out.println("Books to return: ");
                 //query books that user has out as "rented", and give them price for each book?
@@ -108,7 +108,7 @@ public class App {
                 System.out.print("Please enter the name of the book you're trying to locate: ");
                 input.nextLine();
                 String bookTitle = input.nextLine();
-                authorLookup("root", "root", bookTitle);
+                authorLookup(username, password, bookTitle);
                 //query based on book name, show all details about book
 
             } else if (userInput == 2) {
@@ -119,15 +119,15 @@ public class App {
                 switch (userInput) {
                     case 1:
                         System.out.print("*Add to inventory*\n");
-                        addInventory("root","root");
+                        addInventory(username,password);
                         break;
                     case 2:
                         System.out.print("*Delete title*\n");
-                        deleteInventory("root","root");
+                        deleteInventory(username,password);
                         break;
                     case 3:
                         System.out.print("*Update title*\n");
-                        updateInventory("root","root");
+                        updateInventory(username,password);
                         break;
                     default:
                         System.out.println("Command not recognised");
@@ -197,7 +197,12 @@ public class App {
         PreparedStatement checkNumber = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
 
         ResultSet rs = checkNumber.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
 
+        if(count < 2) {
+            test = true;
+        }
         return test;
     }
 
