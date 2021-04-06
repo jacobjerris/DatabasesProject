@@ -169,6 +169,8 @@ public class App {
         PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
         checkBalance.setInt(1, cusNumber);
 
+        boolean balance = false;
+
 
         PreparedStatement countOfRental = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
 
@@ -176,17 +178,12 @@ public class App {
         ResultSet rs = checkBalance.executeQuery();
 
 
-        while(rs.next()) {
+        while (rs.next()) {
             int b = rs.getInt("Balance");
 
-            int rentalCount = count.getInt("Rental");
-            System.out.println(rentalCount);
-
             if (b == 0) {
-                if(rentalCount )
-                System.out.println("You may rent books!");
-            }
-            else {
+                balance = true;
+            } else {
                 System.out.println("Please clear your balance before renting books.");
             }
         }
