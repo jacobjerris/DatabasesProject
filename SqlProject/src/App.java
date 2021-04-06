@@ -49,7 +49,7 @@ public class App {
                 if(userSelection == 1) {
                     System.out.println("Please enter the book title you'd like to purchase: ");
                     String bookUser = input.nextLine();
-                    purchaseBook();
+                    purchaseBook("root", "rootuser", bookUser);
                 }
                 else if(userSelection ==2) {
                     System.out.println("Please provide your customer number: ");
@@ -169,10 +169,21 @@ public class App {
         PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
         checkBalance.setInt(1, cusNumber);
 
+
+        PreparedStatement countOfRental = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
+
+        ResultSet count = countOfRental.executeQuery();
         ResultSet rs = checkBalance.executeQuery();
+
+
         while(rs.next()) {
             int b = rs.getInt("Balance");
+
+            int rentalCount = count.getInt("Rental");
+            System.out.println(rentalCount);
+
             if (b == 0) {
+                if(rentalCount )
                 System.out.println("You may rent books!");
             }
             else {
