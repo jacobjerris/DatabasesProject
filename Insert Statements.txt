@@ -41,3 +41,11 @@ INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('00
 INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000103', '100.00', '0.00');
 INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000104', '23.32', '0.00');
 INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000105', '0.00', '5.00');
+
+#RENT_STATUS INSERTS
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12345', '2021-03-14', '2021-03-28', '2021-03-27');
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12346', '2021-03-01', '2021-03-15', '2021-03-28');
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12347', '2021-02-28', '2021-03-13', '2021-03-14');
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12348', '2021-03-14', '2021-03-28', null);
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12349', '2021-04-01', '2021-04-15', null);
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12350', '2021-03-20', '2021-04-03', null);
