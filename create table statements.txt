@@ -22,9 +22,9 @@ CREATE TABLE `category` (
 
 CREATE TABLE rent_status (
   RentalID int NOT NULL,
-  Day_Rented datetime NOT NULL,
-  Date_Due datetime NOT NULL,
-  Date_Returned datetime DEFAULT NULL,
+  Day_Rented date NOT NULL,
+  Date_Due date NOT NULL,
+  Date_Returned date DEFAULT NULL,
   PRIMARY KEY (RentalID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -56,7 +56,7 @@ CREATE TABLE `books` (
 CREATE TABLE `transaction` (
   `TransactionID` int NOT NULL,
   `CustomerID` int NOT NULL,
-  `Transaction_Date` datetime NOT NULL,
+  `Transaction_Date` date NOT NULL,
   `ISBN` int NOT NULL,
   `Transaction_Price` float DEFAULT '0',
   `Rental` tinyint NOT NULL,
