@@ -76,19 +76,76 @@ public class App {
 
             } else if (userInput == 4) {
                 System.out.println("What would you like to do?");
-                System.out.print("\t1. Check Balance\n\t2. Pay Balance and late fees\nEnter Choice: ");
+                System.out.print("\t1. Check Balance\n\t2. Pay Balance\n\t3. Pay Late Fees\n\tEnter Choice: ");
 
                 userInput = input.nextInt();
+                int CusNumb;
+                String ccard;
+                float balance, payment, finalBalance, lateFees, finalLateFees;
 
                 switch (userInput) {
                     case 1:
                         System.out.print("Enter your customer number to view your balance here: ");
+                        CusNumb = input.nextInt();
+                        balance = viewBalance(CusNumb);
+                        System.out.printf("Your Balance is %.2f", balance);
                         break;
                     case 2:
                         System.out.print("Enter your customer number to view the balance to be paid here: ");
-                        //balance query
-                        System.out.print("Enter your credit card credentials here: ");
-                        //once entered, the info should be cleared in their profile and display 0.00 when they submit
+                        CusNumb = input.nextInt();
+                        balance = viewBalance(CusNumb);
+                        System.out.printf("Your Balance is $%.2f\n", balance);
+                        Scanner in = new Scanner(System.in);
+                        if(balance > 0) {
+                            while (true) {
+                                System.out.print("Enter your credit card credentials here: ");
+                                ccard = in.nextLine();
+                                if (ccard.length() == 16) {
+                                    System.out.print("Your credit card is valid!\n");
+                                    break;
+                                }
+                                System.out.print("Invalid credit card number, credit card number must be 16 digits long\n");
+                            }
+                            while (true) {
+                                System.out.printf("How much would you like to pay? Must be less than or equal to $%.2f\n", balance);
+                                payment = in.nextFloat();
+                                if (payment <= balance && payment >= 0) {
+                                    finalBalance = balance - payment;
+                                    changeBalance(CusNumb, finalBalance);
+                                    break;
+                                }
+                                System.out.println("That was an invalid payment amount!");
+                            }
+                        } else {System.out.println("You Have no Balance to pay");}
+
+                        break;
+                    case 3:
+                        System.out.print("Enter your customer number to view the Late Fees to be paid here: ");
+                        CusNumb = input.nextInt();
+                        lateFees = viewLateFees(CusNumb);
+                        System.out.printf("Your Late Fees Balance is $%.2f\n", lateFees);
+                        Scanner inp = new Scanner(System.in);
+                        if(lateFees > 0) {
+                            while (true) {
+                                System.out.print("Enter your credit card credentials here: ");
+                                ccard = inp.nextLine();
+                                if (ccard.length() == 16) {
+                                    System.out.print("Your credit card is valid!\n");
+                                    break;
+                                }
+                                System.out.print("Invalid credit card number, credit card number must be 16 digits long\n");
+                            }
+                            while (true) {
+                                System.out.printf("How much would you like to pay? Must be less than or equal to $%.2f\n", lateFees);
+                                payment = inp.nextFloat();
+                                if (payment <= lateFees && payment >= 0) {
+                                    finalLateFees = lateFees - payment;
+                                    changeLateFees(CusNumb, finalLateFees);
+                                    break;
+                                }
+                                System.out.println("That was an invalid payment amount!");
+                            }
+                        } else {System.out.println("You Have no Late Fees to pay");}
                         break;
                     default:
                         System.out.println("Command not recognised");
@@ -481,4 +538,72 @@ public class App {
         else
             System.out.println("Option not found");
     }
+    public static float viewBalance(int CusNumb) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        PreparedStatement ps = con.prepareStatement("SELECT CustomerID, Balance FROM local.customer WHERE CustomerID =?");
+        ps.setInt(1, CusNumb);
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+            float balance = rs.getFloat("Balance");
+        return balance;
+    }
+
+    public static void changeBalance(int CusNumb, float finalBalance) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        PreparedStatement ps = con.prepareStatement("UPDATE local.customer SET Balance = ? WHERE CustomerID = ?");
+        ps.setFloat(1, finalBalance);
+        ps.setInt(2, CusNumb);
+
+        ps.executeUpdate();
+
+        float balance = viewBalance(CusNumb);
+        System.out.printf("Your New Balance is $%.2f", balance);
+    }
+
+    public static float viewLateFees(int CusNumb) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        PreparedStatement ps = con.prepareStatement("SELECT CustomerID, LateFees FROM local.customer WHERE CustomerID =?");
+        ps.setInt(1, CusNumb);
+
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        float lateFees = rs.getFloat("LateFees");
+        return lateFees;
+    }
+
+    public static void changeLateFees(int CusNumb, float finalLateFees) throws SQLException, ClassNotFoundException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        PreparedStatement ps = con.prepareStatement("UPDATE local.customer SET LateFees = ? WHERE CustomerID = ?");
+        ps.setFloat(1, finalLateFees);
+        ps.setInt(2, CusNumb);
+
+        ps.executeUpdate();
+
+        float lateFees = viewLateFees(CusNumb);
+        System.out.printf("Your New Late Fees Balance is $%.2f", lateFees);
+    }
 }
+
+
+
+
+/*Users
+        •    Search (Done)
+        •    Checkout (rent) / buy (Jacob)
+        •    Return (Luke)
+        •    Check balance, pay balance and late fees (Nathan)
+        Admins
+        •    Locate title (Done)
+        •    Update inventory (add/delete/update titles) (Luke)
+        •    Check user balance and apply late fees (Jacob)
+        •    Generate Reports (Nathan)
+*/
