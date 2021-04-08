@@ -23,9 +23,8 @@ CREATE TABLE `category` (
 CREATE TABLE rent_status (
   RentalID int NOT NULL,
   Day_Rented datetime NOT NULL,
-  Returned tinyint NOT NULL,
   Date_Due datetime NOT NULL,
-  Date_Returned datetime NOT NULL,
+  Date_Returned datetime DEFAULT NULL,
   PRIMARY KEY (RentalID)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
