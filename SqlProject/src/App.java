@@ -208,6 +208,7 @@ public class App {
         return test;
     }
 
+
     public static void rentBook(String username, String password, int cusNumber) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
@@ -268,8 +269,8 @@ public class App {
         int currBalance = cb.getInt(1);
 
         PreparedStatement customerBalance = con.prepareStatement("UPDATE local.customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
-        customerBalance.setInt(2, cusNumber);
         customerBalance.setInt(1, currBalance);
+        customerBalance.setInt(2, cusNumber);
         customerBalance.executeUpdate();
 
         System.out.println("Your balance has been updated.");
