@@ -1,3 +1,10 @@
+CREATE TABLE customer (
+  CustomerID int NOT NULL,
+  Balance float NOT NULL DEFAULT '0',
+  LateFees float NOT NULL DEFAULT '0',
+  PRIMARY KEY (CustomerID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE `author` (
   `AuthorID` int NOT NULL,
   `FName` varchar(45) NOT NULL,
@@ -5,16 +12,28 @@ CREATE TABLE `author` (
   `MInitial` varchar(1) NOT NULL,
   PRIMARY KEY (`AuthorID`),
   UNIQUE KEY `FName_UNIQUE` (`FName`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `bill` (
-  `TotalPrice` float NOT NULL,
-  `TransactionID` int NOT NULL,
-  PRIMARY KEY (`TotalPrice`),
-  KEY `TransactionID_idx` (`TransactionID`),
-  CONSTRAINT `TransactionID` FOREIGN KEY (`TransactionID`) REFERENCES `transaction` (`TransactionID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+CREATE TABLE `category` (
+  `Genre` varchar(45) NOT NULL,
+  `SubGenre` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`Genre`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE rent_status (
+  RentalID int NOT NULL,
+  Day_Rented datetime NOT NULL,
+  Returned tinyint NOT NULL,
+  Date_Due datetime NOT NULL,
+  Date_Returned datetime NOT NULL,
+  PRIMARY KEY (RentalID)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `publishers` (
+  `PublisherID` int NOT NULL,
+  `Name` varchar(45) NOT NULL,
+  PRIMARY KEY (`PublisherID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `books` (
   `ISBN` int NOT NULL,
@@ -33,33 +52,7 @@ CREATE TABLE `books` (
   CONSTRAINT `AuthorID` FOREIGN KEY (`AuthorID`) REFERENCES `author` (`AuthorID`),
   CONSTRAINT `Genre` FOREIGN KEY (`Genre`) REFERENCES `category` (`Genre`),
   CONSTRAINT `PublisherID` FOREIGN KEY (`PublisherID`) REFERENCES `publishers` (`PublisherID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
-CREATE TABLE `category` (
-  `Genre` varchar(45) NOT NULL,
-  `SubGenre` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`Genre`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
-CREATE TABLE `customer` (
-  `CustomerID` int NOT NULL,
-  `Balance` float NOT NULL DEFAULT '0',
-  PRIMARY KEY (`CustomerID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
-CREATE TABLE `publishers` (
-  `PublisherID` int NOT NULL,
-  `Name` varchar(45) NOT NULL,
-  PRIMARY KEY (`PublisherID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
-
-CREATE TABLE `rent_status` (
-  `RentalID` int NOT NULL,
-  `Day_Rented` datetime NOT NULL,
-  `Returned` tinyint NOT NULL,
-  `Date_Due` datetime NOT NULL,
-  PRIMARY KEY (`RentalID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `transaction` (
   `TransactionID` int NOT NULL,
@@ -76,4 +69,12 @@ CREATE TABLE `transaction` (
   CONSTRAINT `CustomerID` FOREIGN KEY (`CustomerID`) REFERENCES `customer` (`CustomerID`),
   CONSTRAINT `ISBN` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`),
   CONSTRAINT `RentalID` FOREIGN KEY (`RentalID`) REFERENCES `rent_status` (`RentalID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `bill` (
+  `TotalPrice` float NOT NULL,
+  `TransactionID` int NOT NULL,
+  PRIMARY KEY (`TotalPrice`),
+  KEY `TransactionID_idx` (`TransactionID`),
+  CONSTRAINT `TransactionID` FOREIGN KEY (`TransactionID`) REFERENCES `transaction` (`TransactionID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
