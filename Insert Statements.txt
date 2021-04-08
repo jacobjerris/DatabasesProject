@@ -33,3 +33,11 @@ INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `Publishe
 INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('10', '8', 'Books for Dummies', 'Fiction', '4', 'Used', 'Digital', '120.44');
 INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('11', '9', 'Making a query', 'Fiction', '4', 'Used', 'Digital', '230.22');
 INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('12', '10', 'Books!', 'Nonfiction', '4', 'New', 'Hard Copy', '21.00');
+
+#CUSTOMER INSERTS
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000100', '223.33', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000101', '0.00', '56.32');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000102', '0.00', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000103', '100.00', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000104', '23.32', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000105', '0.00', '5.00');
