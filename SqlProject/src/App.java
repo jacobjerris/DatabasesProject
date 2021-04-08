@@ -1,4 +1,7 @@
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.sql.*;
 /*
@@ -50,19 +53,20 @@ public class App {
                 int userSelection = input.nextInt();
 
                 if(userSelection == 1) {
-                    System.out.println("Please enter the book title you'd like to purchase: ");
-                    String bookUser = input.nextLine();
-                    purchaseBook(username, password, bookUser);
+                    System.out.println("Please provide your customer number: ");
+                    int cusNumber = input.nextInt();
+                    purchaseBook(username, password, cusNumber);
                 }
                 else if(userSelection ==2) {
                     System.out.println("Please provide your customer number: ");
                     int cusNumber = input.nextInt();
 
                     if(rentBookCheck(username, password, cusNumber) || rentBookCheck2(username, password)) {
-                        System.out.println("Please clear or return your already rented books before renting another one, thank you!");
+                        //System.out.println("Please clear or return your already rented books before renting another one, thank you!");
+                        rentBook(username, password, cusNumber);
                     }
                     else {
-                       System.out.println("Please enter the book title you'd like to rent: ");
+                        rentBook(username, password, cusNumber);
                     }
                 }
                 //checkout could link to two options, rent or buy
@@ -206,15 +210,116 @@ public class App {
         return test;
     }
 
-    public static void purchaseBook(String username, String password, String book) throws ClassNotFoundException, SQLException {
+    public static void rentBook(String username, String password, int cusNumber) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
-
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
 
-        PreparedStatement checkBalance = con.prepareStatement("");
+        PreparedStatement rentNumber = con.prepareStatement("SELECT max(RentalID) FROM local.rent_status");
+        ResultSet rn = rentNumber.executeQuery();
+        rn.next();
+        int rentCount = rn.getInt(1);
 
-        checkBalance.setString(1, book);
+        PreparedStatement rentStatus = con.prepareStatement("INSERT INTO local.rent_status VALUES (?, Day_Rented, 1, Date_Due)");
+        rentStatus.setInt(1, rentCount + 1);
+        rentStatus.executeUpdate();
 
+
+        //Query that gets the biggest transaction ID and makes it into a value called "count"
+        PreparedStatement transaction = con.prepareStatement("SELECT max(TransactionID) FROM local.transaction");
+        ResultSet rs = transaction.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+        Scanner input = new Scanner(System.in) ;
+        System.out.print("Please enter your book title you'd like to rent:  ");
+        String bookTitle = input.nextLine();
+
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle = ?");
+        ps.setString(1, bookTitle);
+        ResultSet is = ps.executeQuery();
+
+        String b = null;
+        int balance = 0;
+
+        while(is.next()) {
+            b = is.getString("ISBN");
+            balance = is.getInt("Price");
+        }
+
+        //This inserts the transaction when the user finished their purchase
+        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, Transaction_Date , ?, 1, ?)");
+        purchaseBook.setInt(2, cusNumber);
+        purchaseBook.setInt(1, count + 1);
+        purchaseBook.setString(3, b);
+        purchaseBook.setInt(4, balance);
+        purchaseBook.setInt(5, rentCount);
+        purchaseBook.executeUpdate();
+
+
+        PreparedStatement currentBalance = con.prepareStatement("SELECT Balance FROM local.customer WHERE CustomerID = ?");
+        currentBalance.setInt(1, cusNumber);
+        ResultSet cb = transaction.executeQuery();
+        cb.next();
+        int currBalance = cb.getInt(1);
+
+        PreparedStatement customerBalance = con.prepareStatement("UPDATE local.customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
+        customerBalance.setInt(2, cusNumber);
+        customerBalance.setInt(1, currBalance);
+        customerBalance.executeUpdate();
+
+        System.out.println("Your balance has been updated.");
+    }
+
+    public static void purchaseBook(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+
+        //Query that gets the biggest transaction ID and makes it into a value called "count"
+        PreparedStatement transaction = con.prepareStatement("SELECT max(TransactionID) FROM local.transaction");
+        ResultSet rs = transaction.executeQuery();
+        rs.next();
+        int count = rs.getInt(1);
+
+
+
+        Scanner input = new Scanner(System.in) ;
+        System.out.print("Please enter your book title you'd like to purchase:  ");
+        String bookTitle = input.nextLine();
+
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle = ?");
+        ps.setString(1, bookTitle);
+        ResultSet is = ps.executeQuery();
+
+        String b = null;
+        int balance = 0;
+
+        while(is.next()) {
+            b = is.getString("ISBN");
+            balance = is.getInt("Price");
+        }
+
+        //This inserts the transaction when the user finished their purchase
+        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, Transaction_Date , ?, 0, 1)");
+        purchaseBook.setInt(2, cusNumber);
+        purchaseBook.setInt(1, count + 1);
+        purchaseBook.setString(3, b);
+        purchaseBook.setInt(4, balance);
+        purchaseBook.executeUpdate();
+
+
+        PreparedStatement currentBalance = con.prepareStatement("SELECT Balance FROM local.customer WHERE CustomerID = ?");
+        currentBalance.setInt(1, cusNumber);
+        ResultSet cb = transaction.executeQuery();
+        cb.next();
+        int currBalance = cb.getInt(1);
+
+        PreparedStatement customerBalance = con.prepareStatement("UPDATE local.customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
+        customerBalance.setInt(2, cusNumber);
+        customerBalance.setInt(1, currBalance);
+        customerBalance.executeUpdate();
+
+        System.out.println("Your balance has been updated.");
     }
 
 
