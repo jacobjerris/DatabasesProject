@@ -1,4 +1,3 @@
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,7 +9,6 @@ import java.sql.*;
     2. setup some type of login?
     3. make it more "user friendly" and test queries before presentation
  */
-
 public class App {
     static String username = "root";
     static String password = "root";
@@ -214,10 +212,16 @@ public class App {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
 
+        long millis = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(millis);
+        System.out.println(date);
+
         PreparedStatement rentNumber = con.prepareStatement("SELECT max(RentalID) FROM local.rent_status");
         ResultSet rn = rentNumber.executeQuery();
         rn.next();
         int rentCount = rn.getInt(1);
+
+
 
         PreparedStatement rentStatus = con.prepareStatement("INSERT INTO local.rent_status VALUES (?, Day_Rented, 1, Date_Due)");
         rentStatus.setInt(1, rentCount + 1);
@@ -247,12 +251,13 @@ public class App {
         }
 
         //This inserts the transaction when the user finished their purchase
-        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, Transaction_Date , ?, 1, ?)");
-        purchaseBook.setInt(2, cusNumber);
+        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, ? , ?, 1, ?)");
         purchaseBook.setInt(1, count + 1);
-        purchaseBook.setString(3, b);
-        purchaseBook.setInt(4, balance);
-        purchaseBook.setInt(5, rentCount);
+        purchaseBook.setInt(2, cusNumber);
+        purchaseBook.setDate(3, date);
+        purchaseBook.setString(4, b);
+        purchaseBook.setInt(5, balance);
+        purchaseBook.setInt(6, rentCount);
         purchaseBook.executeUpdate();
 
 
@@ -273,6 +278,10 @@ public class App {
     public static void purchaseBook(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        long millis = System.currentTimeMillis();
+        java.sql.Date date = new java.sql.Date(millis);
+        System.out.println(date);
 
 
         //Query that gets the biggest transaction ID and makes it into a value called "count"
@@ -300,11 +309,12 @@ public class App {
         }
 
         //This inserts the transaction when the user finished their purchase
-        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, Transaction_Date , ?, 0, 1)");
-        purchaseBook.setInt(2, cusNumber);
+        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, ? , ?, 0, 1)");
         purchaseBook.setInt(1, count + 1);
-        purchaseBook.setString(3, b);
-        purchaseBook.setInt(4, balance);
+        purchaseBook.setInt(2, cusNumber);
+        purchaseBook.setDate(3, date);
+        purchaseBook.setString(4, b);
+        purchaseBook.setInt(5, balance);
         purchaseBook.executeUpdate();
 
 
