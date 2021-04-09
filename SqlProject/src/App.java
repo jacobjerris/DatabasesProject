@@ -1,6 +1,3 @@
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.sql.*;
 /*
@@ -55,16 +52,15 @@ public class App {
                     int cusNumber = input.nextInt();
                     purchaseBook(username, password, cusNumber);
                 }
-                else if(userSelection ==2) {
+                else if(userSelection == 2) {
                     System.out.println("Please provide your customer number: ");
                     int cusNumber = input.nextInt();
 
-                    if(rentBookCheck(username, password, cusNumber) || rentBookCheck2(username, password)) {
-                        //System.out.println("Please clear or return your already rented books before renting another one, thank you!");
+                    if(rentBookCheck(username, password, cusNumber)) {
                         rentBook(username, password, cusNumber);
                     }
                     else {
-                        rentBook(username, password, cusNumber);
+                        System.out.println("Please clear or return your already rented books before renting another one, thank you!");
                     }
                 }
                 //checkout could link to two options, rent or buy
@@ -193,7 +189,7 @@ public class App {
                 }
 
             } else if (userInput == 3) {
-                System.out.println("What would you like to do?\n1. Check user balance\n2. Apply late fee to user");
+                checkUserBalanceAndLateFees(username, password);
                 //depending on the option, could prob accomplish both tasks with one query
 
             } else if (userInput == 4) {
@@ -235,35 +231,23 @@ public class App {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
         PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
+        PreparedStatement checkRentals = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
         checkBalance.setInt(1, cusNumber);
 
         ResultSet rs = checkBalance.executeQuery();
-
-        while(rs.next()) {
-            int b = rs.getInt("Balance");
-            if (b == 0) {
-                test = true;
-            }
-        }
-        return test;
-    }
-
-    public static boolean rentBookCheck2(String username, String password) throws ClassNotFoundException, SQLException {
-        boolean test = false;
-
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
-        PreparedStatement checkNumber = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
-
-        ResultSet rs = checkNumber.executeQuery();
+        ResultSet cs = checkRentals.executeQuery();
         rs.next();
-        int count = rs.getInt(1);
+        cs.next();
+        int b = rs.getInt("Balance");
+        int c = cs.getInt(1);
 
-        if(count < 2) {
+
+        if (b == 0 && c < 2) {
             test = true;
         }
         return test;
     }
+
 
 
     public static void rentBook(String username, String password, int cusNumber) throws SQLException, ClassNotFoundException {
@@ -272,7 +256,6 @@ public class App {
 
         long millis = System.currentTimeMillis();
         java.sql.Date date = new java.sql.Date(millis);
-        System.out.println(date);
 
         PreparedStatement rentNumber = con.prepareStatement("SELECT max(RentalID) FROM local.rent_status");
         ResultSet rn = rentNumber.executeQuery();
@@ -300,11 +283,11 @@ public class App {
         ps.setString(1, bookTitle);
         ResultSet is = ps.executeQuery();
 
-        String b = null;
+        int b = 0;
         int balance = 0;
 
         while(is.next()) {
-            b = is.getString("ISBN");
+            b = is.getInt("ISBN");
             balance = is.getInt("Price");
         }
 
@@ -313,7 +296,7 @@ public class App {
         purchaseBook.setInt(1, count + 1);
         purchaseBook.setInt(2, cusNumber);
         purchaseBook.setDate(3, date);
-        purchaseBook.setString(4, b);
+        purchaseBook.setInt(4, b);
         purchaseBook.setInt(5, balance);
         purchaseBook.setInt(6, rentCount);
         purchaseBook.executeUpdate();
@@ -549,6 +532,7 @@ public class App {
         else
             System.out.println("Option not found");
     }
+
     public static float viewBalance(int CusNumb) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
@@ -558,8 +542,7 @@ public class App {
 
         ResultSet rs = ps.executeQuery();
         rs.next();
-            float balance = rs.getFloat("Balance");
-        return balance;
+        return rs.getFloat("Balance");
     }
 
     public static void changeBalance(int CusNumb, float finalBalance) throws SQLException, ClassNotFoundException {
@@ -585,8 +568,7 @@ public class App {
 
         ResultSet rs = ps.executeQuery();
         rs.next();
-        float lateFees = rs.getFloat("LateFees");
-        return lateFees;
+        return rs.getFloat("LateFees");
     }
 
     public static void changeLateFees(int CusNumb, float finalLateFees) throws SQLException, ClassNotFoundException {
@@ -601,6 +583,38 @@ public class App {
 
         float lateFees = viewLateFees(CusNumb);
         System.out.printf("Your New Late Fees Balance is $%.2f", lateFees);
+    }
+
+    public static void checkUserBalanceAndLateFees(String username, String password) throws ClassNotFoundException, SQLException {
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Scanner input = new Scanner(System.in);
+
+
+        System.out.println("What would you like to do?\n1. Check Customer Balance\n2. Apply late fees");
+        int userInput = input.nextInt();
+
+        if(userInput == 1) {
+            System.out.print("Enter Customer Number to view Balance: ");
+            int cusNum = input.nextInt();
+            PreparedStatement ps = con.prepareStatement("SELECT Balance FROM local.customer WHERE CustomerID =?");
+            ps.setInt(1, cusNum);
+            ResultSet rs = ps.executeQuery();
+
+            while(rs.next()) {
+                String b = rs.getString("Balance");
+                System.out.print("User balance: " + b);
+            }
+
+        } else if(userInput == 2) {
+            System.out.print("Enter Customer Number to apply a late fee: ");
+            int cusNum = input.nextInt();
+            System.out.println("Enter Late Fee Price: ");
+            int LateFee = input.nextInt();
+            PreparedStatement ps = con.prepareStatement("INSERT INTO local.customer VALUE (?, ?)");
+            ps.setInt(1, cusNum);
+            ps.setInt(2, LateFee);
+        }
     }
 }
 
