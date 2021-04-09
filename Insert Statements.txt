@@ -49,3 +49,11 @@ INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_R
 INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12348', '2021-03-14', '2021-03-28', null);
 INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12349', '2021-04-01', '2021-04-15', null);
 INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12350', '2021-03-20', '2021-04-03', null);
+
+#TRANSACTION INSERTS
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98765', '104', '2021-03-14','1', '0', '1','12345');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98766', '101', '2021-03-01','3', '0', '1','12346');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98767', '105', '2021-02-28','6', '0', '1','12347');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98768', '103', '2021-03-14','8', '0', '1','12348');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98769', '102', '2021-04-01','8', '0', '1','12349');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98770', '100', '2021-03-20','12', '0', '1','12350');
