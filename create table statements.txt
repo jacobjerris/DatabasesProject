@@ -69,11 +69,3 @@ CREATE TABLE `transaction` (
   CONSTRAINT `ISBN` FOREIGN KEY (`ISBN`) REFERENCES `books` (`ISBN`),
   CONSTRAINT `RentalID` FOREIGN KEY (`RentalID`) REFERENCES `rent_status` (`RentalID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-CREATE TABLE `bill` (
-  `TotalPrice` float NOT NULL,
-  `TransactionID` int NOT NULL,
-  PRIMARY KEY (`TotalPrice`),
-  KEY `TransactionID_idx` (`TransactionID`),
-  CONSTRAINT `TransactionID` FOREIGN KEY (`TransactionID`) REFERENCES `transaction` (`TransactionID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
