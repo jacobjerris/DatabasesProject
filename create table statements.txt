@@ -60,7 +60,7 @@ CREATE TABLE `transaction` (
   `ISBN` int NOT NULL,
   `Transaction_Price` float DEFAULT '0',
   `Rental` tinyint NOT NULL,
-  `RentalID` int NOT NULL,
+  `RentalID` int DEFAULT NULL,
   PRIMARY KEY (`TransactionID`),
   KEY `CustomerID_idx` (`CustomerID`),
   KEY `ISBN_idx` (`ISBN`),
