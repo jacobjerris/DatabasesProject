@@ -10,9 +10,6 @@ public class App {
     static String username = "root";
     static String password = "root";
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-
-        //creating database connection
-        //testQuery(username, password);
         Scanner input = new Scanner(System.in);
             System.out.print("Are you a User or an Admin?\n");
             String user = input.nextLine();
@@ -376,7 +373,7 @@ public class App {
 
 
     public static void returnBook(String username, String password) throws ClassNotFoundException, SQLException {
-        //Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
 
         //Prompt User for Book Information
@@ -411,7 +408,7 @@ public class App {
 
         if (rd == null) {
             System.out.printf("Would you like to return \"%s\" to the Book store?\n", t);
-            System.out.printf("Yes/No: ", t);
+            System.out.print("Yes/No: ");
             char user = input.next().charAt(0);
             if(user == 'y' || user == 'Y') {
                 PreparedStatement prs = con.prepareStatement("UPDATE local.rent_status SET Date_Returned = ? WHERE RentalID = ?");
@@ -422,13 +419,13 @@ public class App {
             }
 
             else if (user == 'n' || user == 'N')
-                System.out.printf("\'%s\' has NOT been returned.", t);
+                System.out.printf("'%s' has NOT been returned.", t);
 
             else
                 System.out.println("Command not found. Book NOT returned.");
         }
 
-        else if (rd != null)
+        else if (null != rd)
             System.out.println("There is No book to return.");
 
         else
