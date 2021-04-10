@@ -65,8 +65,8 @@ public class App {
                 }
                 //checkout could link to two options, rent or buy
             } else if (userInput == 3) {
-                System.out.println("Books to return: ");
-                //query books that user has out as "rented", and give them price for each book?
+                System.out.println("Return a Book");
+                    returnBook(username, password);
 
             } else if (userInput == 4) {
                 System.out.println("What would you like to do?");
@@ -225,6 +225,7 @@ public class App {
         }
     }
 
+
     public static boolean rentBookCheck(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
         boolean test = false;
 
@@ -247,7 +248,6 @@ public class App {
         }
         return test;
     }
-
 
 
     public static void rentBook(String username, String password, int cusNumber) throws SQLException, ClassNotFoundException {
@@ -316,6 +316,7 @@ public class App {
         System.out.println("Your balance has been updated.");
     }
 
+
     public static void purchaseBook(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
@@ -371,6 +372,67 @@ public class App {
         customerBalance.executeUpdate();
 
         System.out.println("Your balance has been updated.");
+    }
+
+
+    public static void returnBook(String username, String password) throws ClassNotFoundException, SQLException {
+        //Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        //Prompt User for Book Information
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter your CustomerID: ");
+        String customerID = input.next();
+
+        PreparedStatement bookID = con.prepareStatement("SELECT local.transaction.RentalID, local.transaction.ISBN, local.rent_status.Date_Due, local.rent_status.Date_Returned " +
+                "FROM local.transaction JOIN local.rent_status ON local.transaction.RentalID = local.rent_status.RentalID" +
+                " WHERE CustomerID = ? AND Rental = 1");
+
+        bookID.setInt(1, Integer.parseInt(customerID));
+        ResultSet rs = bookID.executeQuery();
+
+        rs.next();
+        String b = rs.getString("RentalID");
+        int i = rs.getInt("ISBN");
+        Date cd = rs.getDate("Date_Due");
+        Date rd = rs.getDate("Date_Returned");
+
+        PreparedStatement bookTitle = con.prepareStatement("SELECT BookTitle FROM local.books WHERE ISBN = ?");
+        bookTitle.setInt(1, i);
+        ResultSet ns = bookTitle.executeQuery();
+
+        ns.next();
+        String t = ns.getString("BookTitle");
+
+        System.out.print("\n" + "Rental ID: " + b + "\n" + "ISBN: " + i + "\nBook Title: " + t + "\n" + "Due Date: " + cd + "\n");
+
+        long millis = System.currentTimeMillis();
+        java.sql.Date currentDate = new java.sql.Date(millis);
+
+        if (rd == null) {
+            System.out.printf("Would you like to return \"%s\" to the Book store?\n", t);
+            System.out.printf("Yes/No: ", t);
+            char user = input.next().charAt(0);
+            if(user == 'y' || user == 'Y') {
+                PreparedStatement prs = con.prepareStatement("UPDATE local.rent_status SET Date_Returned = ? WHERE RentalID = ?");
+                prs.setDate(1, currentDate);
+                prs.setString(2, b);
+                prs.executeUpdate();
+                prs.close();
+            }
+
+            else if (user == 'n' || user == 'N')
+                System.out.printf("\'%s\' has NOT been returned.", t);
+
+            else
+                System.out.println("Command not found. Book NOT returned.");
+        }
+
+        else if (rd != null)
+            System.out.println("There is No book to return.");
+
+        else
+            System.out.println("No Customer Information Found");
     }
 
 
@@ -533,6 +595,7 @@ public class App {
             System.out.println("Option not found");
     }
 
+
     public static float viewBalance(int CusNumb) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
@@ -544,6 +607,7 @@ public class App {
         rs.next();
         return rs.getFloat("Balance");
     }
+
 
     public static void changeBalance(int CusNumb, float finalBalance) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
@@ -559,6 +623,7 @@ public class App {
         System.out.printf("Your New Balance is $%.2f", balance);
     }
 
+
     public static float viewLateFees(int CusNumb) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
         Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
@@ -570,6 +635,7 @@ public class App {
         rs.next();
         return rs.getFloat("LateFees");
     }
+
 
     public static void changeLateFees(int CusNumb, float finalLateFees) throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.jdbc.Driver");
@@ -584,6 +650,7 @@ public class App {
         float lateFees = viewLateFees(CusNumb);
         System.out.printf("Your New Late Fees Balance is $%.2f", lateFees);
     }
+
 
     public static void checkUserBalanceAndLateFees(String username, String password) throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
@@ -617,9 +684,6 @@ public class App {
         }
     }
 }
-
-
-
 
 /*Users
         •    Search (Done)
