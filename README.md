@@ -5,11 +5,13 @@ This project has included two .txt files, "Insert Statements.txt" and "create ta
 
 //modify these inside the java program to align with your system
 
-connectionSTR = "root"; /*
+/*
         To change the variable "connectionSTR" you'll need to right click on the connection
         that you want to connect to under "MySQL Connections" and select "Copy JDBC Connection String to Clipboard"
         and paste that string into "connectionSTR" the alternative is to replace the n-number with your own MySQL username
      */
+     
+connectionSTR = "root"; 
 
 schemaName = "name of schema";
 
