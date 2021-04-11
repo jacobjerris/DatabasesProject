@@ -3,8 +3,12 @@ Authors: Jacob Jerris, Luke Sanchez, Nathan Smith
 
 This project has included two .txt files, "Insert Statements.txt" and "create table statements.txt" these will give you the create statements for your tables and information to populate them with.
 
-Ideally this program is designed for your Schema to be named "local" but if you are unable to make a schema named "local" you can Ctrl + F in your IDE or text editor of choice and find "local" in our program and "Find and replace all" instances of "local" with whatever the name of your schema is. Most instances of local 
-will be in the "connections" and the SQL statements themselves.
+//modify these to change sql connection accross program
+username = "root";
+password = "root";
+forNameSTR = "com.mysql.cj.jdbc.Driver";
+connectionSTR = "root";
+schemaName = "local";
 
 
 
@@ -37,6 +41,5 @@ FOR COMMAND-LINE:
   ON WINDOWS:
     javac -cp ";:/Jar_File_Path" <prog_name>
     
-Once that is complete the program should run and the user will be prompted for their username and password. This username and password is the user and password you use to log into your local MySql server. 
 
 You will then be able to navigate around the program.
