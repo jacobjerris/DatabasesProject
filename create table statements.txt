@@ -77,3 +77,69 @@ CREATE TABLE `bill` (
   KEY `TransactionID_idx` (`TransactionID`),
   CONSTRAINT `TransactionID` FOREIGN KEY (`TransactionID`) REFERENCES `transaction` (`TransactionID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+#AUTHOR INSERTS:
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('1', 'Test', 'Man', 'T');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('2', 'Matt', 'Man', 'R');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('3', 'Teach', 'SQL', 'Y');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('4', 'Jake', 'John', 'Q');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('5', 'John', 'Allen', 'P');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('6', 'Michael', 'Loop', 'I');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('7', 'Jimmy', 'Nguyen', 'R');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('8', 'Richard', 'Hill', 'P');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('9', 'Christopher', 'Hoskin', 'C');
+INSERT INTO `local`.`author` (`AuthorID`, `FName`, `LName`, `MInitial`) VALUES ('10', 'James', 'Hey', 'A');
+
+#CATEGORY INSERTS: 
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Fiction', 'Realistic Fiction');
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Drama', 'Tragedy');
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Folklore', 'Fairy Tale');
+INSERT INTO `local`.`category` (`Genre`, `SubGenre`) VALUES ('Nonfiction', 'Persuasive Writing');
+
+#PUBLISHER INSERTS:
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('1', 'Im a Publisher');
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('2', 'This is a publisher?');
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('3', 'Who is this publisher');
+INSERT INTO `local`.`publishers` (`PublisherID`, `Name`) VALUES ('4', 'This publisher I am');
+
+#BOOKS INSERTS:
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('1', '1', 'Whats a book title?', 'Fiction', '1', 'New', 'Digital', '10.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('3', '2', 'SQL For Dummies', 'Nonfiction', '2', 'New', 'Digital', '11.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('4', '3', 'This isn\'t a book', 'Drama', '2', 'New', 'Digital', '12.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('5', '4', 'Why do we even sell books', 'Drama', '2', 'New', 'Digital', '20.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('6', '5', 'Books?', 'Folklore', '3', 'New', 'Digital', '24.55');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('8', '6', 'This is a book', 'Folklore', '3', 'Used', 'Hard Copy', '79.00');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('9', '7', 'Why do we have this?', 'Fiction', '1', 'Used', 'Hard Copy', '24.99');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('10', '8', 'Books for Dummies', 'Fiction', '4', 'Used', 'Digital', '120.44');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('11', '9', 'Making a query', 'Fiction', '4', 'Used', 'Digital', '230.22');
+INSERT INTO `local`.`books` (`ISBN`, `AuthorID`, `BookTitle`, `Genre`, `PublisherID`, `Condition`, `Format`, `Price`) VALUES ('12', '10', 'Books!', 'Nonfiction', '4', 'New', 'Hard Copy', '21.00');
+
+#CUSTOMER INSERTS
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000100', '223.33', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000101', '0.00', '56.32');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000102', '0.00', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000103', '100.00', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000104', '23.32', '0.00');
+INSERT INTO `local`.`customer` (`CustomerID`, `Balance`, `LateFees`) VALUES ('000105', '0.00', '5.00');
+
+#RENT_STATUS INSERTS
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12345', '2021-03-14', '2021-03-28', '2021-03-27');
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12346', '2021-03-01', '2021-03-15', '2021-03-28');
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12347', '2021-02-28', '2021-03-13', '2021-03-14');
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12348', '2021-03-14', '2021-03-28', null);
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12349', '2021-04-01', '2021-04-15', null);
+INSERT INTO `local`.`rent_status` (`RentalID`, `Day_Rented`, `Date_Due`, `Date_Returned`) VALUES ('12350', '2021-03-20', '2021-04-03', null);
+
+#TRANSACTION INSERTS
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98765', '104', '2021-03-14','1', '0', '1','12345');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98766', '101', '2021-03-01','3', '0', '1','12346');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98767', '105', '2021-02-28','6', '0', '1','12347');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98768', '103', '2021-03-14','8', '0', '1','12348');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98769', '102', '2021-04-01','8', '0', '1','12349');
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98770', '100', '2021-03-20','12', '0', '1','12350');
+
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98762', '102', '2021-02-28','10', '120.44', '0', null);
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98763', '104', '2021-03-11','11', '230.22', '0', null);
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98764', '101', '2021-04-9','6', '24.55', '0', null);
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98771', '105', '2021-04-1','3', '11.00', '0', null);
+INSERT INTO `local`.`transaction` (`TransactionID`, `CustomerID`, `Transaction_Date`, `ISBN`, `Transaction_Price`, `Rental`, `RentalID`) VALUES ('98772', '100', '2021-01-30','1', '10.00', '0', null);
