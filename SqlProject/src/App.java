@@ -190,9 +190,7 @@ public class App {
                 //depending on the option, could prob accomplish both tasks with one query
 
             } else if (userInput == 4) {
-                System.out.println("Generating Reports..");
-                //doesn't state for dates, but could ask for dates. or just print every record that we have, shouldn't
-                // be too much though
+                generateReports();
 
             } else if (userInput == 5){
                 System.out.println("Goodbye!");
@@ -678,6 +676,226 @@ public class App {
             PreparedStatement ps = con.prepareStatement("INSERT INTO local.customer VALUE (?, ?)");
             ps.setInt(1, cusNum);
             ps.setInt(2, LateFee);
+        }
+    }
+
+    public static void generateReports() throws SQLException, ClassNotFoundException {
+        Scanner in = new Scanner(System.in);
+
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+
+        System.out.println("Would you like to generate reports by:\n\t1.Title and Genre\n\t2.Week, Month, and Year\n\t3.Exit to beginning");
+        int choice1 = in.nextInt();
+
+        switch(choice1) {
+            case 1:
+                System.out.println("Generating report based on Genre and Title\n");
+                System.out.println("Non Rental Purchases Revenue report: Genre");
+                System.out.printf("Genre------------------Revenue\n");
+                PreparedStatement ps = con.prepareStatement("SELECT books.Genre, SUM(transaction.Transaction_Price) AS 'price' FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0  GROUP BY Genre");
+                ResultSet rs = ps.executeQuery();
+                String genre, bookTitle;
+                double price;
+                int date_due, date_returned, date_diff;
+                while (rs.next()) {
+                    genre = rs.getString("Genre");
+                    price = rs.getFloat("price");
+                    System.out.printf("%-15s        $%4.2f\n",genre, price);
+                }
+
+
+                PreparedStatement ps1 = con.prepareStatement("SELECT books.Genre, day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY Genre");
+                ResultSet rs1 = ps1.executeQuery();
+                System.out.println("\nRental Purchases Revenue report: Genre");
+                System.out.printf("Genre------------------Revenue\n");
+                while(rs1.next()) {
+                    price = 0;
+                    genre = rs1.getString("Genre");
+                    date_due = rs1.getInt("Date_Due");
+                    date_returned = rs1.getInt("Date_Returned");
+                    if(date_returned > date_due) {
+                        date_diff = date_returned - date_due;
+                        price = date_diff * 2.00;
+                    }
+                    System.out.printf("%-15s        $%4.2f\n",genre, price);
+                }
+
+
+                System.out.println("\nNon-Rental Purchases Revenue report: Title");
+                System.out.printf("Title-----------------------Revenue\n");
+                PreparedStatement ps2 = con.prepareStatement( "SELECT books.BookTitle, transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 GROUP BY BookTitle ORDER BY BookTitle");
+                ResultSet rs2 = ps2.executeQuery();
+                while(rs2.next()) {
+                    bookTitle = rs2.getString("BookTitle");
+                    price = rs2.getFloat("Transaction_Price");
+                    System.out.printf("%-20s        $%4.2f\n",bookTitle, price);
+                }
+
+
+                System.out.println("\nRental Purchases Revenue report: Title");
+                System.out.printf("Title-----------------------Revenue\n");
+                PreparedStatement ps3 = con.prepareStatement( "SELECT books.BookTitle, day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY BookTitle");
+                ResultSet rs3 = ps3.executeQuery();
+                while(rs3.next()) {
+                    price = 0;
+                    bookTitle = rs3.getString("BookTitle");
+                    date_due = rs3.getInt("Date_Due");
+                    date_returned = rs3.getInt("Date_Returned");
+                    if (date_returned > date_due) {
+                        date_diff = date_returned - date_due;
+                        price = date_diff * 2.00;
+                    }
+                    System.out.printf("%-20s        $%4.2f\n", bookTitle, price);
+                }
+                break;
+
+
+            case 2:
+                double revenue;
+                int date_Numb, due_Date, returned_Date;
+                System.out.println("Generating report based on Week, Month, and Year\n");
+                System.out.println("Non-Rental Revenue Report: Week");
+                System.out.println("Week of the Year-----Revenue");
+                PreparedStatement ps4 = con.prepareStatement("SELECT week(transaction.Transaction_Date) AS 'week_number', transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY week_number");
+                ResultSet rs4 = ps4.executeQuery();
+                float[] week = new float[53];
+                while (rs4.next()) {
+                    date_Numb = rs4.getInt("week_number");
+                    revenue = rs4.getFloat("Transaction_Price");
+                    week[date_Numb] += revenue;
+                }
+
+                for (int i = 0; i <=52; i++) {
+                    if(week[i] != 0) {
+                        System.out.printf("%-4s                 $%4.2f\n", i, week[i]);
+                    }
+                }
+
+
+                System.out.println("\nRental Revenue Report: Week");
+                System.out.println("Week of the Year-----Revenue");
+                PreparedStatement ps5 = con.prepareStatement("SELECT week(transaction.Transaction_Date) AS 'week_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY week_number");
+                ResultSet rs5 = ps5.executeQuery();
+                float[] week1 = new float[53];
+                while (rs5.next()) {
+                    price = 0;
+                    date_Numb = rs5.getInt("week_number");
+                    due_Date = rs5.getInt("Date_Due");
+                    returned_Date = rs5.getInt("Date_Returned");
+                    if (returned_Date > due_Date) {
+                        date_diff = returned_Date - due_Date;
+                        price = date_diff * 2.00;
+                    }
+                    week1[date_Numb] += price;
+                }
+                for (int i = 0; i <=52; i++) {
+                    if(week1[i] != 0) {
+                        System.out.printf("%-4s                 $%4.2f\n", i, week1[i]);
+                    }
+                }
+
+
+                System.out.println("\nNon-Rental Revenue Report: Month");
+                System.out.println("Month-------------Revenue");
+                PreparedStatement ps6 = con.prepareStatement("SELECT month(transaction.Transaction_Date) AS 'month_number', transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY month_number");
+                ResultSet res1 = ps6.executeQuery();
+                int numb, date_differ;
+                float transac_price;
+                double rev;
+                float[] month1 = new float[13];
+                while (res1.next()) {
+                    numb = res1.getInt("month_number");
+                    transac_price = res1.getFloat("Transaction_Price");
+
+                    month1[numb] += transac_price;
+                }
+                if (month1[1] != 0) System.out.printf("%-12s      $%4.2f\n", "January", month1[1]);
+                if (month1[2] != 0) System.out.printf("%-12s      $%4.2f\n", "February", month1[2]);
+                if (month1[3] != 0) System.out.printf("%-12s      $%4.2f\n", "March", month1[3]);
+                if (month1[4] != 0) System.out.printf("%-12s      $%4.2f\n", "April", month1[4]);
+                if (month1[5] != 0) System.out.printf("%-12s      $%4.2f\n", "May", month1[5]);
+                if (month1[6] != 0) System.out.printf("%-12s      $%4.2f\n", "June", month1[6]);
+                if (month1[7] != 0) System.out.printf("%-12s      $%4.2f\n", "July", month1[7]);
+                if (month1[8] != 0) System.out.printf("%-12s      $%4.2f\n", "August", month1[8]);
+                if (month1[9] != 0) System.out.printf("%-12s      $%4.2f\n", "September", month1[9]);
+                if (month1[10] != 0) System.out.printf("%-12s      $%4.2f\n", "October", month1[10]);
+                if (month1[11] != 0) System.out.printf("%-12s      $%4.2f\n", "November", month1[12]);
+                if (month1[12] != 0) System.out.printf("%-12s      $%4.2f\n", "December", month1[12]);
+
+
+                System.out.println("\nRental Revenue Report: Month");
+                System.out.println("Month-------------Revenue");
+                PreparedStatement ps7 = con.prepareStatement("SELECT month(transaction.Transaction_Date) AS 'month_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY month_number");
+                ResultSet res = ps7.executeQuery();
+                float[] month = new float[13];
+                while (res.next()) {
+                    rev = 0;
+                    numb = res.getInt("month_number");
+                    due_Date = res.getInt("Date_Due");
+                    returned_Date = res.getInt("Date_Returned");
+                    if (returned_Date > due_Date) {
+                        date_differ = returned_Date - due_Date;
+                        rev = date_differ * 2.00;
+                    }
+                    month[numb] += rev;
+                }
+                if (month[1] != 0) System.out.printf("%-12s      $%4.2f\n", "January", month[1]);
+                if (month[2] != 0) System.out.printf("%-12s      $%4.2f\n", "February", month[2]);
+                if (month[3] != 0) System.out.printf("%-12s      $%4.2f\n", "March", month[3]);
+                if (month[4] != 0) System.out.printf("%-12s      $%4.2f\n", "April", month[4]);
+                if (month[5] != 0) System.out.printf("%-12s      $%4.2f\n", "May", month[5]);
+                if (month[6] != 0) System.out.printf("%-12s      $%4.2f\n", "June", month[6]);
+                if (month[7] != 0) System.out.printf("%-12s      $%4.2f\n", "July", month[7]);
+                if (month[8] != 0) System.out.printf("%-12s      $%4.2f\n", "August", month[8]);
+                if (month[9] != 0) System.out.printf("%-12s      $%4.2f\n", "September", month[9]);
+                if (month[10] != 0) System.out.printf("%-12s      $%4.2f\n", "October", month[10]);
+                if (month[11] != 0) System.out.printf("%-12s      $%4.2f\n", "November", month[12]);
+                if (month[12] != 0) System.out.printf("%-12s      $%4.2f\n", "December", month[12]);
+
+
+                System.out.println("\nNon-Rental Revenue Report: Year");
+                System.out.println("Year-----Revenue");
+                PreparedStatement ps8 = con.prepareStatement("SELECT year(transaction.Transaction_Date) AS 'year_number', transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY year_number");
+                ResultSet rs8 = ps8.executeQuery();
+                float[] year1 = new float[31];
+                while (rs8.next()) {
+                    date_Numb = rs8.getInt("year_number");
+                    date_Numb -= 2000;
+                    revenue = rs8.getFloat("Transaction_Price");
+                    year1[date_Numb] += revenue;
+                }
+                for (int i = 0; i <=30; i++) {
+                    if(year1[i] != 0) {
+                        System.out.printf("%-4s     $%4.2f\n", i + 2000, year1[i]);
+                    }
+                }
+
+                System.out.println("\nRental Revenue Report: Year");
+                System.out.println("Year-----Revenue");
+                PreparedStatement ps9 = con.prepareStatement("SELECT year(transaction.Transaction_Date) AS 'year_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY year_number");
+                ResultSet rs9 = ps9.executeQuery();
+                float[] year = new float[31];
+                while (rs9.next()) {
+                    price = 0;
+                    date_Numb = rs9.getInt("year_number");
+                    date_Numb -= 2000;
+                    due_Date = rs9.getInt("Date_Due");
+                    returned_Date = rs9.getInt("Date_Returned");
+                    if (returned_Date > due_Date) {
+                        date_diff = returned_Date - due_Date;
+                        price = date_diff * 2.00;
+                    }
+                    year[date_Numb] += price;
+                }
+                for (int i = 0; i <=30; i++) {
+                    if(year[i] != 0) {
+                        System.out.printf("%-4s     $%4.2f\n", i + 2000, year[i]);
+                    }
+                }
+                break;
+            default:
+
         }
     }
 }
