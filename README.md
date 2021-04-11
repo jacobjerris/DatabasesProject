@@ -1,13 +1,18 @@
 # Database Project #
 Authors: Jacob Jerris, Luke Sanchez, Nathan Smith
 
-This project has included two .txt files, "Insert Statements.txt" and "create table statements.txt" these will give you the create statements for your tables and information to populate them with.
+This project has included two .txt files, "Insert Statements.txt" and "create table statements.txt" these will give you the create statements for your tables and information to populate them with. Another thing is when you go to the INSERT statements document, you need to replace all of the schema names "group2" to the name of your schema. The best way will be to find and replace all using Ctrl + F.
 
 //modify these to change sql connection accross program
+
 username = "root";
+
 password = "root";
+
 forNameSTR = "com.mysql.cj.jdbc.Driver";
+
 connectionSTR = "root";
+
 schemaName = "local";
 
 
