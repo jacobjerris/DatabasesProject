@@ -3,17 +3,15 @@ Authors: Jacob Jerris, Luke Sanchez, Nathan Smith
 
 This project has included two .txt files, "Insert Statements.txt" and "create table statements.txt" these will give you the create statements for your tables and information to populate them with. Another thing is when you go to the INSERT statements document, you need to replace all of the schema names "group2" to the name of your schema. The best way will be to find and replace all using Ctrl + F.
 
-//modify these to change sql connection accross program
+//modify these inside the java program to align with your system
 
-username = "root";
+connectionSTR = "root"; /*
+        To change the variable "connectionSTR" you'll need to right click on the connection
+        that you want to connect to under "MySQL Connections" and select "Copy JDBC Connection String to Clipboard"
+        and paste that string into "connectionSTR" the alternative is to replace the n-number with your own MySQL username
+     */
 
-password = "root";
-
-forNameSTR = "com.mysql.cj.jdbc.Driver";
-
-connectionSTR = "root";
-
-schemaName = "local";
+schemaName = "name of schema";
 
 
 
@@ -30,20 +28,36 @@ Select the jar file from the required folder
 Click and Apply and Ok
 
 FOR INTELLIJ:
-To import jar file in your Eclipse IDE, follow the steps given below.
 
-Right click on your project
-Select Build Path
-Click on Configure Build Path
-Click on Libraries and select Add External JARs
-Select the jar file from the required folder
-Click and Apply and OK
+open project
+
+click File
+
+click "Project Structure
+
+on the left select "Modules"
+
+click the "+" button
+
+click "Jars or Directories"
+
+locate the jar file you want
+
+click "ok
+
+click "apply"
+
 
 FOR COMMAND-LINE:
+
   ON LINUX:
+  
     javac -cp .:/Jar_File_Path <prog_name>.java
+    
     java -cp .:/Jar_File_Path <prog_name>
+    
   ON WINDOWS:
+  
     javac -cp ";:/Jar_File_Path" <prog_name>
     
 
