@@ -9,6 +9,11 @@ import java.sql.*;
 public class App {
     static String username = "root";
     static String password = "root";
+    
+    //modify these to change sql connection accross program
+    static String forNameSTR = "com.mysql.cj.jdbc.Driver";
+    static String connectionSTR = "n01429204@cisvm-winsrv-mysql1.unfcsd.unf.edu:3308";
+    
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Scanner input = new Scanner(System.in);
             System.out.print("Are you a User or an Admin?\n");
@@ -203,8 +208,8 @@ public class App {
 
 
     public static void authorLookup(String username, String password, String bookTitle) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle =?");
         ps.setString(1, bookTitle);
@@ -224,8 +229,8 @@ public class App {
     public static boolean rentBookCheck(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
         boolean test = false;
 
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
         PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
         PreparedStatement checkRentals = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
         checkBalance.setInt(1, cusNumber);
@@ -246,8 +251,8 @@ public class App {
 
 
     public static void rentBook(String username, String password, int cusNumber) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         long millis = System.currentTimeMillis();
         java.sql.Date date = new java.sql.Date(millis);
@@ -313,8 +318,8 @@ public class App {
 
 
     public static void purchaseBook(String username, String password, int cusNumber) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         long millis = System.currentTimeMillis();
         java.sql.Date date = new java.sql.Date(millis);
@@ -371,8 +376,8 @@ public class App {
 
 
     public static void returnBook(String username, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         //Prompt User for Book Information
         Scanner input = new Scanner(System.in);
@@ -432,8 +437,8 @@ public class App {
 
 
     public static void addInventory(String username, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         //Prompt User for Book Information
         Scanner input = new Scanner(System.in);
@@ -519,8 +524,8 @@ public class App {
 
 
     public static void deleteInventory(String username, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         Scanner input = new Scanner(System.in);
         System.out.print("Enter Book Title to Delete: ");
@@ -548,8 +553,8 @@ public class App {
 
 
     public static void updateInventory(String username, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         Scanner input = new Scanner(System.in);
         System.out.print("Enter Book ISBN to Update: ");
@@ -592,8 +597,8 @@ public class App {
 
 
     public static float viewBalance(int CusNumb) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         PreparedStatement ps = con.prepareStatement("SELECT CustomerID, Balance FROM local.customer WHERE CustomerID =?");
         ps.setInt(1, CusNumb);
@@ -605,8 +610,8 @@ public class App {
 
 
     public static void changeBalance(int CusNumb, float finalBalance) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         PreparedStatement ps = con.prepareStatement("UPDATE local.customer SET Balance = ? WHERE CustomerID = ?");
         ps.setFloat(1, finalBalance);
@@ -620,8 +625,8 @@ public class App {
 
 
     public static float viewLateFees(int CusNumb) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         PreparedStatement ps = con.prepareStatement("SELECT CustomerID, LateFees FROM local.customer WHERE CustomerID =?");
         ps.setInt(1, CusNumb);
@@ -633,8 +638,8 @@ public class App {
 
 
     public static void changeLateFees(int CusNumb, float finalLateFees) throws SQLException, ClassNotFoundException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         PreparedStatement ps = con.prepareStatement("UPDATE local.customer SET LateFees = ? WHERE CustomerID = ?");
         ps.setFloat(1, finalLateFees);
@@ -648,8 +653,8 @@ public class App {
 
 
     public static void checkUserBalanceAndLateFees(String username, String password) throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
         Scanner input = new Scanner(System.in);
 
 
@@ -682,8 +687,8 @@ public class App {
     public static void generateReports() throws SQLException, ClassNotFoundException {
         Scanner in = new Scanner(System.in);
 
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection con = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306", username, password);
+        Class.forName(forNameSTR);
+        Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
         System.out.println("Would you like to generate reports by:\n\t1.Title and Genre\n\t2.Week, Month, and Year\n\t3.Exit to beginning");
         int choice1 = in.nextInt();
