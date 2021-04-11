@@ -7,13 +7,13 @@ import java.sql.*;
     3. make it more "user friendly" and test queries before presentation
  */
 public class App {
-    static String username = "n01429204";
-    static String password = "PassofPasses1";
+    static String username = "root";
+    static String password = "root";
     
     //modify these to change sql connection accross program
     static String forNameSTR = "com.mysql.cj.jdbc.Driver";
-    static String connectionSTR = "jdbc:mysql://cisvm-winsrv-mysql1.unfcsd.unf.edu:3308/?user=n01429204";
-    static String schemaName = "group2";
+    static String connectionSTR = "root";
+    static String schemaName = "local";
     
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Scanner input = new Scanner(System.in);
