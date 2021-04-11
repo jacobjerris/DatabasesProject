@@ -13,6 +13,7 @@ public class App {
     //modify these to change sql connection accross program
     static String forNameSTR = "com.mysql.cj.jdbc.Driver";
     static String connectionSTR = "n01429204@cisvm-winsrv-mysql1.unfcsd.unf.edu:3308";
+    static String schemaName = "group2";
     
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Scanner input = new Scanner(System.in);
@@ -211,7 +212,7 @@ public class App {
         Class.forName(forNameSTR);
         Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle =?");
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + schemaName + ".books WHERE BookTitle =?");
         ps.setString(1, bookTitle);
 
         ResultSet rs = ps.executeQuery();
@@ -231,8 +232,8 @@ public class App {
 
         Class.forName(forNameSTR);
         Connection con = DriverManager.getConnection(connectionSTR, username, password);
-        PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM local.customer WHERE CustomerID =?");
-        PreparedStatement checkRentals = con.prepareStatement("SELECT COUNT(local.transaction.Rental) FROM local.transaction WHERE Rental = 1");
+        PreparedStatement checkBalance = con.prepareStatement("SELECT customer.Balance FROM " + schemaName + ".customer WHERE CustomerID =?");
+        PreparedStatement checkRentals = con.prepareStatement("SELECT COUNT(" + schemaName + ".transaction.Rental) FROM " + schemaName + ".transaction WHERE Rental = 1");
         checkBalance.setInt(1, cusNumber);
 
         ResultSet rs = checkBalance.executeQuery();
@@ -257,20 +258,20 @@ public class App {
         long millis = System.currentTimeMillis();
         java.sql.Date date = new java.sql.Date(millis);
 
-        PreparedStatement rentNumber = con.prepareStatement("SELECT max(RentalID) FROM local.rent_status");
+        PreparedStatement rentNumber = con.prepareStatement("SELECT max(RentalID) FROM " + schemaName + ".rent_status");
         ResultSet rn = rentNumber.executeQuery();
         rn.next();
         int rentCount = rn.getInt(1);
 
 
 
-        PreparedStatement rentStatus = con.prepareStatement("INSERT INTO local.rent_status VALUES (?, Day_Rented, 1, Date_Due)");
+        PreparedStatement rentStatus = con.prepareStatement("INSERT INTO " + schemaName + ".rent_status VALUES (?, Day_Rented, 1, Date_Due)");
         rentStatus.setInt(1, rentCount + 1);
         rentStatus.executeUpdate();
 
 
         //Query that gets the biggest transaction ID and makes it into a value called "count"
-        PreparedStatement transaction = con.prepareStatement("SELECT max(TransactionID) FROM local.transaction");
+        PreparedStatement transaction = con.prepareStatement("SELECT max(TransactionID) FROM " + schemaName + ".transaction");
         ResultSet rs = transaction.executeQuery();
         rs.next();
         int count = rs.getInt(1);
@@ -279,7 +280,7 @@ public class App {
         System.out.print("Please enter your book title you'd like to rent:  ");
         String bookTitle = input.nextLine();
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle = ?");
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + schemaName + ".books WHERE BookTitle = ?");
         ps.setString(1, bookTitle);
         ResultSet is = ps.executeQuery();
 
@@ -292,7 +293,7 @@ public class App {
         }
 
         //This inserts the transaction when the user finished their purchase
-        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, ? , ?, 1, ?)");
+        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO " + schemaName + ".transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, ? , ?, 1, ?)");
         purchaseBook.setInt(1, count + 1);
         purchaseBook.setInt(2, cusNumber);
         purchaseBook.setDate(3, date);
@@ -302,13 +303,13 @@ public class App {
         purchaseBook.executeUpdate();
 
 
-        PreparedStatement currentBalance = con.prepareStatement("SELECT Balance FROM local.customer WHERE CustomerID = ?");
+        PreparedStatement currentBalance = con.prepareStatement("SELECT Balance FROM " + schemaName + ".customer WHERE CustomerID = ?");
         currentBalance.setInt(1, cusNumber);
         ResultSet cb = transaction.executeQuery();
         cb.next();
         int currBalance = cb.getInt(1);
 
-        PreparedStatement customerBalance = con.prepareStatement("UPDATE local.customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
+        PreparedStatement customerBalance = con.prepareStatement("UPDATE " + schemaName + ".customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
         customerBalance.setInt(1, currBalance);
         customerBalance.setInt(2, cusNumber);
         customerBalance.executeUpdate();
@@ -327,7 +328,7 @@ public class App {
 
 
         //Query that gets the biggest transaction ID and makes it into a value called "count"
-        PreparedStatement transaction = con.prepareStatement("SELECT max(TransactionID) FROM local.transaction");
+        PreparedStatement transaction = con.prepareStatement("SELECT max(TransactionID) FROM " + schemaName + ".transaction");
         ResultSet rs = transaction.executeQuery();
         rs.next();
         int count = rs.getInt(1);
@@ -338,7 +339,7 @@ public class App {
         System.out.print("Please enter your book title you'd like to purchase:  ");
         String bookTitle = input.nextLine();
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE BookTitle = ?");
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + schemaName + ".books WHERE BookTitle = ?");
         ps.setString(1, bookTitle);
         ResultSet is = ps.executeQuery();
 
@@ -351,7 +352,7 @@ public class App {
         }
 
         //This inserts the transaction when the user finished their purchase
-        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO local.transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, ? , ?, 0, 1)");
+        PreparedStatement purchaseBook = con.prepareStatement("INSERT INTO " + schemaName + ".transaction (TransactionID, CustomerID,Transaction_Date, ISBN,Transaction_Price, Rental, RentalID) VALUES (?, ?, ?, ? , ?, 0, 1)");
         purchaseBook.setInt(1, count + 1);
         purchaseBook.setInt(2, cusNumber);
         purchaseBook.setDate(3, date);
@@ -360,13 +361,13 @@ public class App {
         purchaseBook.executeUpdate();
 
 
-        PreparedStatement currentBalance = con.prepareStatement("SELECT Balance FROM local.customer WHERE CustomerID = ?");
+        PreparedStatement currentBalance = con.prepareStatement("SELECT Balance FROM " + schemaName + ".customer WHERE CustomerID = ?");
         currentBalance.setInt(1, cusNumber);
         ResultSet cb = transaction.executeQuery();
         cb.next();
         int currBalance = cb.getInt(1);
 
-        PreparedStatement customerBalance = con.prepareStatement("UPDATE local.customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
+        PreparedStatement customerBalance = con.prepareStatement("UPDATE " + schemaName + ".customer SET Balance = ? + customer.Balance WHERE CustomerID = ?");
         customerBalance.setInt(2, cusNumber);
         customerBalance.setInt(1, currBalance);
         customerBalance.executeUpdate();
@@ -384,8 +385,8 @@ public class App {
         System.out.print("Enter your CustomerID: ");
         String customerID = input.next();
 
-        PreparedStatement bookID = con.prepareStatement("SELECT local.transaction.RentalID, local.transaction.ISBN, local.rent_status.Date_Due, local.rent_status.Date_Returned " +
-                "FROM local.transaction JOIN local.rent_status ON local.transaction.RentalID = local.rent_status.RentalID" +
+        PreparedStatement bookID = con.prepareStatement("SELECT " + schemaName + ".transaction.RentalID, " + schemaName + ".transaction.ISBN, " + schemaName + ".rent_status.Date_Due, " + schemaName + ".rent_status.Date_Returned " +
+                "FROM " + schemaName + ".transaction JOIN " + schemaName + ".rent_status ON " + schemaName + ".transaction.RentalID = " + schemaName + ".rent_status.RentalID" +
                 " WHERE CustomerID = ? AND Rental = 1");
 
         bookID.setInt(1, Integer.parseInt(customerID));
@@ -397,7 +398,7 @@ public class App {
         Date cd = rs.getDate("Date_Due");
         Date rd = rs.getDate("Date_Returned");
 
-        PreparedStatement bookTitle = con.prepareStatement("SELECT BookTitle FROM local.books WHERE ISBN = ?");
+        PreparedStatement bookTitle = con.prepareStatement("SELECT BookTitle FROM " + schemaName + ".books WHERE ISBN = ?");
         bookTitle.setInt(1, i);
         ResultSet ns = bookTitle.executeQuery();
 
@@ -414,7 +415,7 @@ public class App {
             System.out.print("Yes/No: ");
             char user = input.next().charAt(0);
             if(user == 'y' || user == 'Y') {
-                PreparedStatement prs = con.prepareStatement("UPDATE local.rent_status SET Date_Returned = ? WHERE RentalID = ?");
+                PreparedStatement prs = con.prepareStatement("UPDATE " + schemaName + ".rent_status SET Date_Returned = ? WHERE RentalID = ?");
                 prs.setDate(1, currentDate);
                 prs.setString(2, b);
                 prs.executeUpdate();
@@ -471,7 +472,7 @@ public class App {
         String bookPrice = input.nextLine();
 
         //Author Insert Statement
-        String sqlAuthor = "INSERT INTO local.author (AuthorID, FName, LName, MInitial ) VALUES (?, ?, ?, ?)";
+        String sqlAuthor = "INSERT INTO " + schemaName + ".author (AuthorID, FName, LName, MInitial ) VALUES (?, ?, ?, ?)";
 
         PreparedStatement authorStatement = con.prepareStatement(sqlAuthor);
         authorStatement.setInt(1, Integer.parseInt(bookAuthorID));
@@ -483,7 +484,7 @@ public class App {
         authorStatement.executeUpdate();
 
         //Genre Insert Statement
-        String sqlGenre = "INSERT INTO local.category (Genre, SubGenre ) VALUES (?, ?)";
+        String sqlGenre = "INSERT INTO " + schemaName + ".category (Genre, SubGenre ) VALUES (?, ?)";
 
         PreparedStatement genreStatement = con.prepareStatement(sqlGenre);
         genreStatement.setString(1, bookGenre);
@@ -493,7 +494,7 @@ public class App {
         genreStatement.executeUpdate();
 
         //Publisher Insert Statement
-        String sqlPublisher = "INSERT INTO local.publishers (PublisherID, Name ) VALUES (?, ?)";
+        String sqlPublisher = "INSERT INTO " + schemaName + ".publishers (PublisherID, Name ) VALUES (?, ?)";
 
         PreparedStatement publisherStatement = con.prepareStatement(sqlPublisher);
         publisherStatement.setString(1, bookPublisherID);
@@ -503,7 +504,7 @@ public class App {
         publisherStatement.executeUpdate();
 
         //Book Insert Statement
-        String sqlBook = "INSERT INTO local.books (ISBN, AuthorID, BookTitle, Genre, PublisherID, `Condition`, `Format`, Price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlBook = "INSERT INTO " + schemaName + ".books (ISBN, AuthorID, BookTitle, Genre, PublisherID, `Condition`, `Format`, Price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         PreparedStatement bookStatement = con.prepareStatement(sqlBook);
         bookStatement.setInt(1, Integer.parseInt(bookISBN));
@@ -535,7 +536,7 @@ public class App {
             System.out.printf("Would you like to delete the book \"%s\" from inventory?\nYes/No:", bookTitle);
             char user = input.nextLine().charAt(0);
             if(user == 'y' || user == 'Y') {
-                PreparedStatement ds = con.prepareStatement("DELETE FROM local.books WHERE BookTitle =?");
+                PreparedStatement ds = con.prepareStatement("DELETE FROM " + schemaName + ".books WHERE BookTitle =?");
                 ds.setString(1, bookTitle);
                 ds.executeUpdate();
                 System.out.printf("Book \"%s\" has been Deleted from inventory.", bookTitle);
@@ -560,7 +561,7 @@ public class App {
         System.out.print("Enter Book ISBN to Update: ");
         String bookISBN = input.nextLine();
 
-        PreparedStatement ps = con.prepareStatement("SELECT * FROM local.books WHERE ISBN =?");
+        PreparedStatement ps = con.prepareStatement("SELECT * FROM " + schemaName + ".books WHERE ISBN =?");
         ps.setString(1, bookISBN);
 
         ResultSet rs = ps.executeQuery();
@@ -579,7 +580,7 @@ public class App {
             System.out.print("New Book Title: ");
             String bookTitle = input.nextLine();
             
-            PreparedStatement prs = con.prepareStatement("UPDATE local.books SET BookTitle = ? WHERE ISBN = ?");
+            PreparedStatement prs = con.prepareStatement("UPDATE " + schemaName + ".books SET BookTitle = ? WHERE ISBN = ?");
 
             prs.setString(1,bookTitle);
             prs.setString(2,bookISBN);
@@ -600,7 +601,7 @@ public class App {
         Class.forName(forNameSTR);
         Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
-        PreparedStatement ps = con.prepareStatement("SELECT CustomerID, Balance FROM local.customer WHERE CustomerID =?");
+        PreparedStatement ps = con.prepareStatement("SELECT CustomerID, Balance FROM " + schemaName + ".customer WHERE CustomerID =?");
         ps.setInt(1, CusNumb);
 
         ResultSet rs = ps.executeQuery();
@@ -613,7 +614,7 @@ public class App {
         Class.forName(forNameSTR);
         Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
-        PreparedStatement ps = con.prepareStatement("UPDATE local.customer SET Balance = ? WHERE CustomerID = ?");
+        PreparedStatement ps = con.prepareStatement("UPDATE " + schemaName + ".customer SET Balance = ? WHERE CustomerID = ?");
         ps.setFloat(1, finalBalance);
         ps.setInt(2, CusNumb);
 
@@ -628,7 +629,7 @@ public class App {
         Class.forName(forNameSTR);
         Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
-        PreparedStatement ps = con.prepareStatement("SELECT CustomerID, LateFees FROM local.customer WHERE CustomerID =?");
+        PreparedStatement ps = con.prepareStatement("SELECT CustomerID, LateFees FROM " + schemaName + ".customer WHERE CustomerID =?");
         ps.setInt(1, CusNumb);
 
         ResultSet rs = ps.executeQuery();
@@ -641,7 +642,7 @@ public class App {
         Class.forName(forNameSTR);
         Connection con = DriverManager.getConnection(connectionSTR, username, password);
 
-        PreparedStatement ps = con.prepareStatement("UPDATE local.customer SET LateFees = ? WHERE CustomerID = ?");
+        PreparedStatement ps = con.prepareStatement("UPDATE " + schemaName + ".customer SET LateFees = ? WHERE CustomerID = ?");
         ps.setFloat(1, finalLateFees);
         ps.setInt(2, CusNumb);
 
@@ -664,7 +665,7 @@ public class App {
         if(userInput == 1) {
             System.out.print("Enter Customer Number to view Balance: ");
             int cusNum = input.nextInt();
-            PreparedStatement ps = con.prepareStatement("SELECT Balance FROM local.customer WHERE CustomerID =?");
+            PreparedStatement ps = con.prepareStatement("SELECT Balance FROM " + schemaName + ".customer WHERE CustomerID =?");
             ps.setInt(1, cusNum);
             ResultSet rs = ps.executeQuery();
 
@@ -678,7 +679,7 @@ public class App {
             int cusNum = input.nextInt();
             System.out.println("Enter Late Fee Price: ");
             int LateFee = input.nextInt();
-            PreparedStatement ps = con.prepareStatement("INSERT INTO local.customer VALUE (?, ?)");
+            PreparedStatement ps = con.prepareStatement("INSERT INTO " + schemaName + ".customer VALUE (?, ?)");
             ps.setInt(1, cusNum);
             ps.setInt(2, LateFee);
         }
@@ -698,7 +699,7 @@ public class App {
                 System.out.println("Generating report based on Genre and Title\n");
                 System.out.println("Non Rental Purchases Revenue report: Genre");
                 System.out.printf("Genre------------------Revenue\n");
-                PreparedStatement ps = con.prepareStatement("SELECT books.Genre, SUM(transaction.Transaction_Price) AS 'price' FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0  GROUP BY Genre");
+                PreparedStatement ps = con.prepareStatement("SELECT books.Genre, SUM(transaction.Transaction_Price) AS 'price' FROM " + schemaName + ".books, " + schemaName + ".transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0  GROUP BY Genre");
                 ResultSet rs = ps.executeQuery();
                 String genre, bookTitle;
                 double price;
@@ -710,7 +711,7 @@ public class App {
                 }
 
 
-                PreparedStatement ps1 = con.prepareStatement("SELECT books.Genre, day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY Genre");
+                PreparedStatement ps1 = con.prepareStatement("SELECT books.Genre, day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM " + schemaName + ".books, " + schemaName + ".transaction, " + schemaName + ".rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY Genre");
                 ResultSet rs1 = ps1.executeQuery();
                 System.out.println("\nRental Purchases Revenue report: Genre");
                 System.out.printf("Genre------------------Revenue\n");
@@ -729,7 +730,7 @@ public class App {
 
                 System.out.println("\nNon-Rental Purchases Revenue report: Title");
                 System.out.printf("Title-----------------------Revenue\n");
-                PreparedStatement ps2 = con.prepareStatement( "SELECT books.BookTitle, transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 GROUP BY BookTitle ORDER BY BookTitle");
+                PreparedStatement ps2 = con.prepareStatement( "SELECT books.BookTitle, transaction.Transaction_Price FROM " + schemaName + ".books, " + schemaName + ".transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 GROUP BY BookTitle ORDER BY BookTitle");
                 ResultSet rs2 = ps2.executeQuery();
                 while(rs2.next()) {
                     bookTitle = rs2.getString("BookTitle");
@@ -740,7 +741,7 @@ public class App {
 
                 System.out.println("\nRental Purchases Revenue report: Title");
                 System.out.printf("Title-----------------------Revenue\n");
-                PreparedStatement ps3 = con.prepareStatement( "SELECT books.BookTitle, day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY BookTitle");
+                PreparedStatement ps3 = con.prepareStatement( "SELECT books.BookTitle, day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM " + schemaName + ".books, " + schemaName + ".transaction, " + schemaName + ".rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY BookTitle");
                 ResultSet rs3 = ps3.executeQuery();
                 while(rs3.next()) {
                     price = 0;
@@ -762,7 +763,7 @@ public class App {
                 System.out.println("Generating report based on Week, Month, and Year\n");
                 System.out.println("Non-Rental Revenue Report: Week");
                 System.out.println("Week of the Year-----Revenue");
-                PreparedStatement ps4 = con.prepareStatement("SELECT week(transaction.Transaction_Date) AS 'week_number', transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY week_number");
+                PreparedStatement ps4 = con.prepareStatement("SELECT week(transaction.Transaction_Date) AS 'week_number', transaction.Transaction_Price FROM " + schemaName + ".books, " + schemaName + ".transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY week_number");
                 ResultSet rs4 = ps4.executeQuery();
                 float[] week = new float[53];
                 while (rs4.next()) {
@@ -780,7 +781,7 @@ public class App {
 
                 System.out.println("\nRental Revenue Report: Week");
                 System.out.println("Week of the Year-----Revenue");
-                PreparedStatement ps5 = con.prepareStatement("SELECT week(transaction.Transaction_Date) AS 'week_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY week_number");
+                PreparedStatement ps5 = con.prepareStatement("SELECT week(transaction.Transaction_Date) AS 'week_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM " + schemaName + ".books, " + schemaName + ".transaction, " + schemaName + ".rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY week_number");
                 ResultSet rs5 = ps5.executeQuery();
                 float[] week1 = new float[53];
                 while (rs5.next()) {
@@ -803,7 +804,7 @@ public class App {
 
                 System.out.println("\nNon-Rental Revenue Report: Month");
                 System.out.println("Month-------------Revenue");
-                PreparedStatement ps6 = con.prepareStatement("SELECT month(transaction.Transaction_Date) AS 'month_number', transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY month_number");
+                PreparedStatement ps6 = con.prepareStatement("SELECT month(transaction.Transaction_Date) AS 'month_number', transaction.Transaction_Price FROM " + schemaName + ".books, " + schemaName + ".transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY month_number");
                 ResultSet res1 = ps6.executeQuery();
                 int numb, date_differ;
                 float transac_price;
@@ -831,7 +832,7 @@ public class App {
 
                 System.out.println("\nRental Revenue Report: Month");
                 System.out.println("Month-------------Revenue");
-                PreparedStatement ps7 = con.prepareStatement("SELECT month(transaction.Transaction_Date) AS 'month_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY month_number");
+                PreparedStatement ps7 = con.prepareStatement("SELECT month(transaction.Transaction_Date) AS 'month_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM " + schemaName + ".books, " + schemaName + ".transaction, " + schemaName + ".rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY month_number");
                 ResultSet res = ps7.executeQuery();
                 float[] month = new float[13];
                 while (res.next()) {
@@ -861,7 +862,7 @@ public class App {
 
                 System.out.println("\nNon-Rental Revenue Report: Year");
                 System.out.println("Year-----Revenue");
-                PreparedStatement ps8 = con.prepareStatement("SELECT year(transaction.Transaction_Date) AS 'year_number', transaction.Transaction_Price FROM local.books, local.transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY year_number");
+                PreparedStatement ps8 = con.prepareStatement("SELECT year(transaction.Transaction_Date) AS 'year_number', transaction.Transaction_Price FROM " + schemaName + ".books, " + schemaName + ".transaction WHERE books.ISBN = transaction.ISBN AND Transaction_Price != 0 ORDER BY year_number");
                 ResultSet rs8 = ps8.executeQuery();
                 float[] year1 = new float[31];
                 while (rs8.next()) {
@@ -878,7 +879,7 @@ public class App {
 
                 System.out.println("\nRental Revenue Report: Year");
                 System.out.println("Year-----Revenue");
-                PreparedStatement ps9 = con.prepareStatement("SELECT year(transaction.Transaction_Date) AS 'year_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM local.books, local.transaction, local.rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY year_number");
+                PreparedStatement ps9 = con.prepareStatement("SELECT year(transaction.Transaction_Date) AS 'year_number', day(rent_status.Date_Due) AS 'Date_Due', day(rent_status.Date_Returned) AS 'Date_Returned' FROM " + schemaName + ".books, " + schemaName + ".transaction, " + schemaName + ".rent_status WHERE books.ISBN = transaction.ISBN AND transaction.RentalID = rent_status.RentalID AND Date_Returned IS NOT NULL ORDER BY year_number");
                 ResultSet rs9 = ps9.executeQuery();
                 float[] year = new float[31];
                 while (rs9.next()) {
