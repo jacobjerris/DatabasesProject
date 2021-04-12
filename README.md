@@ -64,4 +64,3 @@ FOR COMMAND-LINE:
     
 
 You will then be able to navigate around the program.
-a
